@@ -1,0 +1,262 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// =====================================================
+// 1. USERS
+// =====================================================
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  username  String   @unique
+  password  String
+  avatar    String?
+  role      String   @default("user")    // "user" or "admin"
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sessions       UserSession[]
+  settings       UserSettings?
+  favorites      Favorite[]
+  watchLater     WatchLater[]
+  watchHistory   WatchHistory[]
+  episodeProgress EpisodeProgress[]
+  reviews        Review[]
+  notifications  Notification[]
+  searchHistory  SearchHistory[]
+  reports        Report[]
+
+  @@map("users")
+}
+
+// =====================================================
+// 2. USER SESSIONS (login tokens / remember me)
+// =====================================================
+model UserSession {
+  id         String   @id @default(uuid())
+  userId     String
+  token      String   @unique
+  deviceInfo String?
+  ipAddress  String?
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("user_sessions")
+}
+
+// =====================================================
+// 3. USER SETTINGS (theme, notifications, preferences)
+// =====================================================
+model UserSettings {
+  id                    String  @id @default(uuid())
+  userId                String  @unique
+  themeColor            String  @default("Red")
+  language              String  @default("en")
+  notifyNewReleases     Boolean @default(true)
+  notifyRecommendations Boolean @default(true)
+  autoplayNext          Boolean @default(true)
+  defaultQuality        String  @default("1080p")
+  updatedAt             DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_settings")
+}
+
+// =====================================================
+// 4. FAVORITES
+// content_id = Xtream ID like "movie-123" or "series-456"
+// content_type = "movie" or "series"
+// =====================================================
+model Favorite {
+  id            String   @id @default(uuid())
+  userId        String
+  contentId     String
+  contentType   String       // "movie" or "series"
+  contentTitle  String?
+  contentPoster String?
+  createdAt     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, contentId, contentType])
+  @@index([userId])
+  @@map("favorites")
+}
+
+// =====================================================
+// 5. WATCH LATER
+// =====================================================
+model WatchLater {
+  id            String   @id @default(uuid())
+  userId        String
+  contentId     String
+  contentType   String       // "movie" or "series"
+  contentTitle  String?
+  contentPoster String?
+  createdAt     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, contentId, contentType])
+  @@index([userId])
+  @@map("watch_later")
+}
+
+// =====================================================
+// 6. WATCH HISTORY (progress tracking / continue watching)
+// =====================================================
+model WatchHistory {
+  id            String   @id @default(uuid())
+  userId        String
+  contentId     String
+  contentType   String       // "movie" or "series"
+  contentTitle  String?
+  contentPoster String?
+  episodeId     String?      // For series: which episode
+  seasonNumber  Int?
+  episodeNumber Int?
+  progress      Int      @default(0)  // Seconds watched
+  duration      Int      @default(0)  // Total seconds
+  completed     Boolean  @default(false)
+  watchedAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, contentId, contentType, episodeId])
+  @@index([userId])
+  @@index([watchedAt])
+  @@map("watch_history")
+}
+
+// =====================================================
+// 7. EPISODE PROGRESS (per-episode watched status)
+// =====================================================
+model EpisodeProgress {
+  id            String   @id @default(uuid())
+  userId        String
+  seriesId      String       // Xtream series ID
+  seasonNumber  Int
+  episodeNumber Int
+  episodeId     String       // Xtream episode ID
+  progress      Int      @default(0)  // Seconds watched
+  duration      Int      @default(0)  // Total seconds
+  completed     Boolean  @default(false)
+  watchedAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, seriesId, seasonNumber, episodeNumber])
+  @@index([userId, seriesId])
+  @@map("episode_progress")
+}
+
+// =====================================================
+// 8. REVIEWS (ratings & comments)
+// =====================================================
+model Review {
+  id          String   @id @default(uuid())
+  userId      String
+  contentId   String
+  contentType String       // "movie" or "series"
+  contentTitle String?
+  contentPoster String?
+  rating      Int          // 1-5
+  comment     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, contentId, contentType])
+  @@index([userId])
+  @@index([contentId, contentType])
+  @@map("reviews")
+}
+
+// =====================================================
+// 9. NOTIFICATIONS
+// =====================================================
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  message   String
+  type      String   @default("system")  // "new_release", "recommendation", "system", "update"
+  isRead    Boolean  @default(false)
+  link      String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([userId, isRead])
+  @@map("notifications")
+}
+
+// =====================================================
+// 10. SEARCH HISTORY
+// =====================================================
+model SearchHistory {
+  id        String   @id @default(uuid())
+  userId    String
+  query     String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("search_history")
+}
+
+// =====================================================
+// 11. ISSUE REPORTS
+// =====================================================
+enum ReportStatus {
+  PENDING
+  RESOLVED
+}
+
+model Report {
+  id           String       @id @default(uuid())
+  userId       String
+  contentId    String
+  contentType  String       // "movie" or "series"
+  contentTitle String?
+  issueType    String       // e.g., "Server not working", "Subtitle problem"
+  details      String?
+  status       ReportStatus @default(PENDING)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([contentId, contentType])
+  @@index([status])
+  @@map("reports")
+}
+
+model Advertisement {
+  id              String   @id @default(uuid())
+  imageUrl        String
+  link            String?
+  showCountPerDay Int      @default(1) // 0 for every time, 1 for once, 2 for twice
+  isActive        Boolean  @default(true)
+  updatedAt       DateTime @updatedAt
+  createdAt       DateTime @default(now())
+
+  @@map("advertisements")
+}
