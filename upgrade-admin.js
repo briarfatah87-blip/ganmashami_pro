@@ -37,7 +37,7 @@ async function upgradeToAdmin() {
         });
 
         console.log(`✅ Success! User ${user.username} (${email}) has been upgraded to an Admin.`);
-        console.log(`You can now log in and access the dashboard at http://localhost:3009/admin`);
+        console.log(`You can now log in and access the dashboard at http://localhost:80/admin`);
     } catch (error) {
         console.error('❌ Error upgrading user:', error);
     } finally {

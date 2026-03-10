@@ -40,7 +40,7 @@ async function resetPassword() {
         });
 
         console.log(`✅ Success! The password for ${user.username} (${email}) has been reset to: password123`);
-        console.log(`You can now log in at http://localhost:3009/login with the new password.`);
+        console.log(`You can now log in at http://localhost:80/login with the new password.`);
     } catch (error) {
         console.error('❌ Error resetting password:', error);
     } finally {
