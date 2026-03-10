@@ -3,7 +3,7 @@ const http = require('http');
 async function test() {
     try {
         // 1. Login to get token
-        const loginRes = await fetch('http://localhost:3009/api/auth/login', {
+        const loginRes = await fetch('http://localhost:80/api/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: 'test@example.com', password: 'password123' })
@@ -13,7 +13,7 @@ async function test() {
         let cookie = loginRes.headers.get('set-cookie');
 
         if (!loginRes.ok) {
-            const regRes = await fetch('http://localhost:3009/api/auth/register', {
+            const regRes = await fetch('http://localhost:80/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: 'test_report@example.com', username: 'test_report', password: 'password123' })
@@ -33,7 +33,7 @@ async function test() {
         const sessionToken = cookie.split(';').find(c => c.includes('seven_stream_session'));
 
         // 2. Submit report
-        const reportRes = await fetch('http://localhost:3009/api/reports', {
+        const reportRes = await fetch('http://localhost:80/api/reports', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
