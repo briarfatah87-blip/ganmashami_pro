@@ -1,12 +1,14 @@
 import { PrismaClient } from '@prisma/client'
 
 const prismaClientSingleton = () => {
-    if (!process.env.DATABASE_URL) {
-        console.warn('DATABASE_URL is not set')
+    const databaseUrl = process.env.DATABASE_URL
+
+    if (!databaseUrl) {
+        throw new Error('DATABASE_URL is not set')
     }
 
-    // Use Prisma's default engine connection path to avoid adapter-specific issues.
-    return new PrismaClient()
+    // Prisma v7 requires explicit client options in this runtime setup.
+    return new PrismaClient({ datasourceUrl: databaseUrl })
 }
 
 declare global {
