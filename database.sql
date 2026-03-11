@@ -9,7 +9,7 @@
 -- =====================================================
 
 DO $$ BEGIN
-    CREATE TYPE "ReportStatus" AS ENUM ('PENDING', 'REVIEWED', 'RESOLVED', 'DISMISSED');
+    CREATE TYPE "ReportStatus" AS ENUM ('PENDING', 'RESOLVED');
 EXCEPTION
     WHEN duplicate_object THEN null;
 END $$;

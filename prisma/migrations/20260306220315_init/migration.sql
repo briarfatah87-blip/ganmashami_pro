@@ -34,7 +34,6 @@ CREATE TABLE "user_settings" (
     "language" TEXT NOT NULL DEFAULT 'en',
     "notifyNewReleases" BOOLEAN NOT NULL DEFAULT true,
     "notifyRecommendations" BOOLEAN NOT NULL DEFAULT true,
-    "notifyEmailUpdates" BOOLEAN NOT NULL DEFAULT false,
     "autoplayNext" BOOLEAN NOT NULL DEFAULT true,
     "defaultQuality" TEXT NOT NULL DEFAULT '1080p',
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -111,6 +110,8 @@ CREATE TABLE "reviews" (
     "userId" TEXT NOT NULL,
     "contentId" TEXT NOT NULL,
     "contentType" TEXT NOT NULL,
+    "contentTitle" TEXT,
+    "contentPoster" TEXT,
     "rating" INTEGER NOT NULL,
     "comment" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -235,3 +236,47 @@ ALTER TABLE "notifications" ADD CONSTRAINT "notifications_userId_fkey" FOREIGN K
 
 -- AddForeignKey
 ALTER TABLE "search_history" ADD CONSTRAINT "search_history_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- CreateEnum
+CREATE TYPE "ReportStatus" AS ENUM ('PENDING', 'RESOLVED');
+
+-- CreateTable
+CREATE TABLE "reports" (
+    "id" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "contentId" TEXT NOT NULL,
+    "contentType" TEXT NOT NULL,
+    "contentTitle" TEXT,
+    "issueType" TEXT NOT NULL,
+    "details" TEXT,
+    "status" "ReportStatus" NOT NULL DEFAULT 'PENDING',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "reports_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "advertisements" (
+    "id" TEXT NOT NULL,
+    "imageUrl" TEXT NOT NULL,
+    "link" TEXT,
+    "showCountPerDay" INTEGER NOT NULL DEFAULT 1,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "advertisements_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE INDEX "reports_userId_idx" ON "reports"("userId");
+
+-- CreateIndex
+CREATE INDEX "reports_contentId_contentType_idx" ON "reports"("contentId", "contentType");
+
+-- CreateIndex
+CREATE INDEX "reports_status_idx" ON "reports"("status");
+
+-- AddForeignKey
+ALTER TABLE "reports" ADD CONSTRAINT "reports_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
