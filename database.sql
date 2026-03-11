@@ -3,21 +3,44 @@
 -- User accounts, favorites, watch history, reviews,
 -- notifications, settings, and more
 -- =====================================================
--- Movies & series come from the Xtream API, so we
--- only store the content_id (e.g. "movie-123") and
--- content_type ("movie" or "series") to reference them.
--- =====================================================
-
--- Create the database (run this separately as superuser if needed):
--- CREATE DATABASE seven_stream;
-
--- Connect to the database:
--- \c seven_stream
 
 -- =====================================================
 -- ENUM TYPES
 -- =====================================================
- 
+
+DO $$ BEGIN
+    CREATE TYPE "ReportStatus" AS ENUM ('PENDING', 'REVIEWED', 'RESOLVED', 'DISMISSED');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+-- =====================================================
+-- 1. USERS (must be first — other tables reference it)
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS public.users
+(
+    id text COLLATE pg_catalog."default" NOT NULL,
+    email text COLLATE pg_catalog."default" NOT NULL,
+    username text COLLATE pg_catalog."default" NOT NULL,
+    password text COLLATE pg_catalog."default" NOT NULL,
+    avatar text COLLATE pg_catalog."default",
+    role text COLLATE pg_catalog."default" NOT NULL DEFAULT 'user'::text,
+    "isActive" boolean NOT NULL DEFAULT true,
+    "createdAt" timestamp(3) without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" timestamp(3) without time zone NOT NULL,
+    CONSTRAINT users_pkey PRIMARY KEY (id)
+)
+TABLESPACE pg_default;
+
+CREATE UNIQUE INDEX IF NOT EXISTS users_email_key
+    ON public.users USING btree (email COLLATE pg_catalog."default" ASC NULLS LAST)
+    TABLESPACE pg_default;
+
+CREATE UNIQUE INDEX IF NOT EXISTS users_username_key
+    ON public.users USING btree (username COLLATE pg_catalog."default" ASC NULLS LAST)
+    TABLESPACE pg_default;
+
  -- Table: public.advertisements
 
 -- DROP TABLE IF EXISTS public.advertisements;
@@ -417,47 +440,6 @@ ALTER TABLE IF EXISTS public.user_settings
 CREATE UNIQUE INDEX IF NOT EXISTS "user_settings_userId_key"
     ON public.user_settings USING btree
     ("userId" COLLATE pg_catalog."default" ASC NULLS LAST)
-    WITH (fillfactor=100, deduplicate_items=True)
-    TABLESPACE pg_default;
-
-    -- Table: public.users
-
--- DROP TABLE IF EXISTS public.users;
-
-CREATE TABLE IF NOT EXISTS public.users
-(
-    id text COLLATE pg_catalog."default" NOT NULL,
-    email text COLLATE pg_catalog."default" NOT NULL,
-    username text COLLATE pg_catalog."default" NOT NULL,
-    password text COLLATE pg_catalog."default" NOT NULL,
-    avatar text COLLATE pg_catalog."default",
-    role text COLLATE pg_catalog."default" NOT NULL DEFAULT 'user'::text,
-    "isActive" boolean NOT NULL DEFAULT true,
-    "createdAt" timestamp(3) without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" timestamp(3) without time zone NOT NULL,
-    CONSTRAINT users_pkey PRIMARY KEY (id)
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS public.users
-    OWNER to postgres;
--- Index: users_email_key
-
--- DROP INDEX IF EXISTS public.users_email_key;
-
-CREATE UNIQUE INDEX IF NOT EXISTS users_email_key
-    ON public.users USING btree
-    (email COLLATE pg_catalog."default" ASC NULLS LAST)
-    WITH (fillfactor=100, deduplicate_items=True)
-    TABLESPACE pg_default;
--- Index: users_username_key
-
--- DROP INDEX IF EXISTS public.users_username_key;
-
-CREATE UNIQUE INDEX IF NOT EXISTS users_username_key
-    ON public.users USING btree
-    (username COLLATE pg_catalog."default" ASC NULLS LAST)
     WITH (fillfactor=100, deduplicate_items=True)
     TABLESPACE pg_default;
 
