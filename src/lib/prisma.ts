@@ -7,8 +7,7 @@ const prismaClientSingleton = () => {
         throw new Error('DATABASE_URL is not set')
     }
 
-    // Prisma v7 requires explicit client options in this runtime setup.
-    return new PrismaClient({ datasourceUrl: databaseUrl })
+    return new PrismaClient({ datasources: { db: { url: databaseUrl } } })
 }
 
 declare global {
