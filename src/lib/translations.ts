@@ -26,6 +26,9 @@ export const translations = {
     settings: 'Settings',
     logout: 'Logout',
     admin: 'Admin',
+    notificationsTitle: 'Notifications',
+    markAllRead: 'Mark all as read',
+    noNotificationsYet: 'No notifications yet',
 
     // Common
     loading: 'Loading...',

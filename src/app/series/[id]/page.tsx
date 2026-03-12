@@ -158,7 +158,7 @@ export default function SeriesDetailPage() {
               {currentSeason?.episodes?.[0] && (
                 <Button size="xl" asChild>
                   <Link href={`/series/${series.id}/watch?season=${currentSeason.id}&episode=${currentSeason.episodes[0].id}`}>
-                    <Play className="mr-2 h-5 w-5 fill-current" />
+                    <Play className="me-2 h-5 w-5 fill-current" />
                   {t('watchNow')}
                   </Link>
                 </Button>
@@ -191,7 +191,7 @@ export default function SeriesDetailPage() {
                   } catch (e) { console.error(e) } finally { setIsTogglingAction(false) }
                 }}
               >
-                <Heart className={`mr-2 h-5 w-5 ${isFavorite ? 'fill-current' : ''}`} />
+                <Heart className={`me-2 h-5 w-5 ${isFavorite ? 'fill-current' : ''}`} />
                 {isFavorite ? t('inFavorites') : t('addToFavorites')}
               </Button>
 
@@ -224,12 +224,12 @@ export default function SeriesDetailPage() {
               >
                 {isInWatchLater ? (
                   <>
-                    <Check className="mr-2 h-5 w-5" />
+                    <Check className="me-2 h-5 w-5" />
                     {t('inWatchLater')}
                   </>
                 ) : (
                   <>
-                    <Clock className="mr-2 h-5 w-5" />
+                    <Clock className="me-2 h-5 w-5" />
                     {t('watchLater')}
                   </>
                 )}

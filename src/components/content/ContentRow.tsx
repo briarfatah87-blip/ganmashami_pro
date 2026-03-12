@@ -18,13 +18,16 @@ interface ContentRowProps {
 export default function ContentRow({ title, items, type, showViewAll = true }: ContentRowProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const { currentTheme } = useTheme()
-  const { t } = useLanguage()
+  const { t, dir } = useLanguage()
+  const isRTL = dir === 'rtl'
 
-  const scroll = (direction: 'left' | 'right') => {
+  const scroll = (direction: 'start' | 'end') => {
     if (scrollRef.current) {
       const scrollAmount = 800
+      // In RTL, the scroll direction is reversed
+      const isForward = direction === 'end'
       scrollRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        left: (isRTL ? !isForward : isForward) ? scrollAmount : -scrollAmount,
         behavior: 'smooth'
       })
     }
@@ -49,25 +52,25 @@ export default function ContentRow({ title, items, type, showViewAll = true }: C
             className="text-sm font-medium transition-colors hover:underline"
             style={{ color: currentTheme.primary }}
           >
-            {t('viewAll')} →
+            {isRTL ? `← ${t('viewAll')}` : `${t('viewAll')} →`}
           </Link>
         )}
       </div>
       
       <div className="group relative">
-        {/* Scroll buttons - Modern glassmorphism */}
+        {/* Scroll buttons - start/end side (RTL-aware) */}
         <button
-          onClick={() => scroll('left')}
-          className="absolute -left-2 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white/10 backdrop-blur-md text-white opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center hover:bg-white/20 hover:scale-110 border border-white/10 shadow-xl"
+          onClick={() => scroll('start')}
+          className="absolute -start-2 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white/10 backdrop-blur-md text-white opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center hover:bg-white/20 hover:scale-110 border border-white/10 shadow-xl"
         >
-          <ChevronLeft className="h-6 w-6" />
+          {isRTL ? <ChevronRight className="h-6 w-6" /> : <ChevronLeft className="h-6 w-6" />}
         </button>
         
         <button
-          onClick={() => scroll('right')}
-          className="absolute -right-2 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white/10 backdrop-blur-md text-white opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center hover:bg-white/20 hover:scale-110 border border-white/10 shadow-xl"
+          onClick={() => scroll('end')}
+          className="absolute -end-2 top-1/2 -translate-y-1/2 z-10 w-12 h-12 rounded-full bg-white/10 backdrop-blur-md text-white opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center hover:bg-white/20 hover:scale-110 border border-white/10 shadow-xl"
         >
-          <ChevronRight className="h-6 w-6" />
+          {isRTL ? <ChevronLeft className="h-6 w-6" /> : <ChevronRight className="h-6 w-6" />}
         </button>
 
         {/* Content scroll container */}

@@ -95,7 +95,7 @@ export default function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center gap-8">
             {navItems.map((item) => (
               <Link
                 key={item.href}
@@ -108,7 +108,7 @@ export default function Header() {
           </nav>
 
           {/* Right Side Actions */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-4">
             {/* Search */}
             <div className="relative">
               {isSearchOpen ? (
@@ -154,16 +154,16 @@ export default function Header() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-80 max-h-[400px] overflow-y-auto">
                   <div className="flex items-center justify-between px-4 py-2 border-b border-gray-800">
-                    <span className="font-semibold text-white">Notifications</span>
+                    <span className="font-semibold text-white">{t('notificationsTitle')}</span>
                     {unreadCount > 0 && (
                       <button onClick={handleMarkAllAsRead} className="text-xs text-gray-400 hover:text-white transition-colors">
-                        Mark all as read
+                        {t('markAllRead')}
                       </button>
                     )}
                   </div>
                   {notifications.length === 0 ? (
                     <div className="p-4 text-center text-sm text-gray-500">
-                      No notifications yet
+                      {t('noNotificationsYet')}
                     </div>
                   ) : (
                     notifications.map((notification) => (
@@ -193,7 +193,7 @@ export default function Header() {
             {isLoggedIn ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="flex items-center space-x-2">
+                  <button className="flex items-center gap-2">
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={user?.avatar || undefined} />
                       <AvatarFallback className="text-white text-sm" style={{ backgroundColor: currentTheme.primary }}>
@@ -205,43 +205,43 @@ export default function Header() {
                 <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuItem asChild>
                     <Link href="/profile" className="flex items-center">
-                      <User className="mr-2 h-4 w-4" />
+                      <User className="me-2 h-4 w-4" />
                       {t('profile')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/profile?tab=favorites" className="flex items-center">
-                      <Heart className="mr-2 h-4 w-4" />
+                      <Heart className="me-2 h-4 w-4" />
                       {t('favorites')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/profile?tab=watchlater" className="flex items-center">
-                      <Clock className="mr-2 h-4 w-4" />
+                      <Clock className="me-2 h-4 w-4" />
                       {t('watchLater')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/profile?tab=history" className="flex items-center">
-                      <History className="mr-2 h-4 w-4" />
+                      <History className="me-2 h-4 w-4" />
                       {t('watchHistory')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
                     <Link href="/settings" className="flex items-center">
-                      <Settings className="mr-2 h-4 w-4" />
+                      <Settings className="me-2 h-4 w-4" />
                       {t('settings')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="text-red-500 focus:text-red-500 cursor-pointer" onClick={() => logout()}>
-                    <LogOut className="mr-2 h-4 w-4" />
+                    <LogOut className="me-2 h-4 w-4" />
                     {t('logout')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <div className="hidden md:flex items-center space-x-2">
+              <div className="hidden md:flex items-center gap-2">
                 <Button variant="ghost" asChild>
                   <Link href="/login">{t('login')}</Link>
                 </Button>

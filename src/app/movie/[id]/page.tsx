@@ -208,7 +208,7 @@ export default function MoviePage() {
             <div className="flex flex-wrap gap-3 mb-8">
               <Button size="xl" asChild>
                 <Link href={`/movie/${movie.id}/watch`}>
-                  <Play className="mr-2 h-5 w-5 fill-current" />
+                  <Play className="me-2 h-5 w-5 fill-current" />
                   {t('watchNow')}
                 </Link>
               </Button>
@@ -248,7 +248,7 @@ export default function MoviePage() {
                   } catch (e) { console.error(e) } finally { setIsTogglingAction(false) }
                 }}
               >
-                <Heart className={`mr-2 h-5 w-5 ${isFavorite ? 'fill-current' : ''}`} />
+                <Heart className={`me-2 h-5 w-5 ${isFavorite ? 'fill-current' : ''}`} />
                 {isFavorite ? t('inFavorites') : t('addToFavorites')}
               </Button>
 

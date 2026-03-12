@@ -27,10 +27,24 @@ body {
   font-family: var(--font-arabic), 'Noto Naskh Arabic', Arial, sans-serif;
 }
 
-[dir="rtl"] .container,
-[dir="rtl"] .flex {
-  direction: rtl;
-}
+/* Flip physical margins on icon-text pairs in RTL */
+[dir="rtl"] .mr-2 { margin-right: 0 !important; margin-left: 0.5rem !important; }
+[dir="rtl"] .mr-1 { margin-right: 0 !important; margin-left: 0.25rem !important; }
+[dir="rtl"] .mr-3 { margin-right: 0 !important; margin-left: 0.75rem !important; }
+[dir="rtl"] .ml-2 { margin-left: 0 !important; margin-right: 0.5rem !important; }
+[dir="rtl"] .ml-1 { margin-left: 0 !important; margin-right: 0.25rem !important; }
+[dir="rtl"] .ml-3 { margin-left: 0 !important; margin-right: 0.75rem !important; }
+[dir="rtl"] .ml-4 { margin-left: 0 !important; margin-right: 1rem !important; }
+
+/* Flip horizontal space utilities */
+[dir="rtl"] .space-x-2 > * + * { margin-left: 0 !important; margin-right: 0.5rem !important; }
+[dir="rtl"] .space-x-3 > * + * { margin-left: 0 !important; margin-right: 0.75rem !important; }
+[dir="rtl"] .space-x-4 > * + * { margin-left: 0 !important; margin-right: 1rem !important; }
+[dir="rtl"] .space-x-8 > * + * { margin-left: 0 !important; margin-right: 2rem !important; }
+
+/* Text alignment */
+[dir="rtl"] .text-left { text-align: right !important; }
+[dir="rtl"] .md\:text-left { text-align: right !important; }
 
 .bg-modern-dark {
   background: radial-gradient(circle at top right, #2a303c 0%, #1e232e 50%, #151821 100%);
