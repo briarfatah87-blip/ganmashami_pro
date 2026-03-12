@@ -22,9 +22,11 @@ body {
 }
 
 /* RTL support for Kurdish Sorani */
-[dir="rtl"] body,
-[dir="rtl"] {
+[dir="rtl"],
+[dir="rtl"] body {
   font-family: var(--font-arabic), 'Noto Naskh Arabic', Arial, sans-serif;
+  /* Force direction to cascade into all elements including flex/grid containers */
+  direction: rtl;
 }
 
 /* Flip physical margins on icon-text pairs in RTL */
