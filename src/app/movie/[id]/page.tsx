@@ -14,7 +14,8 @@ import type { MappedMovie } from '@/lib/xtream-api'
 
 export default function MoviePage() {
   const params = useParams()
-  const { t } = useLanguage()
+  const { t, dir } = useLanguage()
+  const isRTL = dir === 'rtl'
   const [movie, setMovie] = useState<MappedMovie | null>(null)
   const [loading, setLoading] = useState(true)
   const [isFavorite, setIsFavorite] = useState(false)
@@ -103,7 +104,7 @@ export default function MoviePage() {
             priority
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-r from-[var(--background)] via-[var(--background)]/80 to-transparent" />
+        <div className={`absolute inset-0 ${isRTL ? 'bg-gradient-to-l' : 'bg-gradient-to-r'} from-[var(--background)] via-[var(--background)]/80 to-transparent`} />
         <div className="absolute inset-0 bg-gradient-to-t from-[var(--background)] via-transparent to-transparent" />
       </div>
 

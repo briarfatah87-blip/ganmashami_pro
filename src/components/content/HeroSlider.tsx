@@ -18,7 +18,8 @@ export default function HeroSlider({ items }: HeroSliderProps) {
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const { currentTheme } = useTheme()
-  const { t } = useLanguage()
+  const { t, dir } = useLanguage()
+  const isRTL = dir === 'rtl'
 
   useEffect(() => {
     if (!isAutoPlaying) return
@@ -69,8 +70,8 @@ export default function HeroSlider({ items }: HeroSliderProps) {
         />
       </div>
       
-      {/* Gradient Overlays - More cinematic */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[var(--background)] via-[var(--background)]/70 to-transparent" />
+      {/* Gradient Overlays - direction-aware */}
+      <div className={`absolute inset-0 ${isRTL ? 'bg-gradient-to-l' : 'bg-gradient-to-r'} from-[var(--background)] via-[var(--background)]/70 to-transparent`} />
       <div className="absolute inset-0 bg-gradient-to-t from-[var(--background)] via-[var(--background)]/20 to-[var(--background)]/40" />
       <div className="absolute inset-0 bg-gradient-to-b from-[var(--background)]/60 via-transparent to-transparent h-32" />
 
@@ -153,18 +154,18 @@ export default function HeroSlider({ items }: HeroSliderProps) {
         </div>
       </div>
 
-      {/* Navigation Arrows - Modern glassmorphism */}
+      {/* Navigation Arrows - RTL-aware */}
       <button
-        onClick={goToPrevious}
-        className="absolute left-6 top-1/2 -translate-y-1/2 w-14 h-14 rounded-xl bg-white/10 backdrop-blur-md text-white flex items-center justify-center hover:bg-white/20 transition-all duration-300 border border-white/10 hover:scale-110"
+        onClick={isRTL ? goToNext : goToPrevious}
+        className="absolute start-6 top-1/2 -translate-y-1/2 w-14 h-14 rounded-xl bg-white/10 backdrop-blur-md text-white flex items-center justify-center hover:bg-white/20 transition-all duration-300 border border-white/10 hover:scale-110"
       >
-        <ChevronLeft className="h-7 w-7" />
+        {isRTL ? <ChevronRight className="h-7 w-7" /> : <ChevronLeft className="h-7 w-7" />}
       </button>
       <button
-        onClick={goToNext}
-        className="absolute right-6 top-1/2 -translate-y-1/2 w-14 h-14 rounded-xl bg-white/10 backdrop-blur-md text-white flex items-center justify-center hover:bg-white/20 transition-all duration-300 border border-white/10 hover:scale-110"
+        onClick={isRTL ? goToPrevious : goToNext}
+        className="absolute end-6 top-1/2 -translate-y-1/2 w-14 h-14 rounded-xl bg-white/10 backdrop-blur-md text-white flex items-center justify-center hover:bg-white/20 transition-all duration-300 border border-white/10 hover:scale-110"
       >
-        <ChevronRight className="h-7 w-7" />
+        {isRTL ? <ChevronLeft className="h-7 w-7" /> : <ChevronRight className="h-7 w-7" />}
       </button>
 
       {/* Progress Indicator - Modern style */}
@@ -193,7 +194,7 @@ export default function HeroSlider({ items }: HeroSliderProps) {
       </div>
 
       {/* Slide counter */}
-      <div className="absolute bottom-10 right-6 px-4 py-2 rounded-lg bg-white/10 backdrop-blur-md text-white text-sm font-medium">
+      <div className="absolute bottom-10 end-6 px-4 py-2 rounded-lg bg-white/10 backdrop-blur-md text-white text-sm font-medium">
         {String(currentIndex + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}
       </div>
     </div>

@@ -94,7 +94,7 @@ export default function DynamicBackdrop({
           <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[var(--background)] via-[var(--background)]/80 to-transparent" />
           
           {/* Side gradients */}
-          <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[var(--background)]/50 to-transparent" />
+          <div className="absolute inset-y-0 start-0 w-32 bg-gradient-to-e from-[var(--background)]/50 to-transparent" />
           <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[var(--background)]/50 to-transparent" />
         </>
       )}
