@@ -1,9 +1,10 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Search, Bell, User, Menu, X, Heart, Clock, History, LogOut, Settings } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { Search, Bell, User, Menu, X, Heart, Clock, History, LogOut, Settings, Film, Tv, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -25,13 +26,84 @@ export default function Header() {
   const isLoggedIn = !!user
   const settings = useSiteSettings()
   const { t, dir } = useLanguage()
+  const router = useRouter()
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [searchResults, setSearchResults] = useState<{ movies: any[], series: any[] }>({ movies: [], series: [] })
+  const [isSearching, setIsSearching] = useState(false)
   const [notifications, setNotifications] = useState<any[]>([])
   const { currentTheme } = useTheme()
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const searchContainerRef = useRef<HTMLDivElement>(null)
 
-  React.useEffect(() => {
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(e.target as Node)) {
+        setIsSearchOpen(false)
+        setSearchResults({ movies: [], series: [] })
+        setSearchQuery('')
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const handleSearchChange = useCallback((value: string) => {
+    setSearchQuery(value)
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    if (!value.trim()) {
+      setSearchResults({ movies: [], series: [] })
+      return
+    }
+    debounceRef.current = setTimeout(async () => {
+      setIsSearching(true)
+      try {
+        const [moviesRes, seriesRes] = await Promise.all([
+          fetch('/api/movies'),
+          fetch('/api/series'),
+        ])
+        const [movies, series] = await Promise.all([moviesRes.json(), seriesRes.json()])
+        const q = value.toLowerCase()
+        setSearchResults({
+          movies: (Array.isArray(movies) ? movies : []).filter((m: any) => m.title?.toLowerCase().includes(q)).slice(0, 5),
+          series: (Array.isArray(series) ? series : []).filter((s: any) => s.title?.toLowerCase().includes(q)).slice(0, 5),
+        })
+      } catch {
+        setSearchResults({ movies: [], series: [] })
+      } finally {
+        setIsSearching(false)
+      }
+    }, 300)
+  }, [])
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && searchQuery.trim()) {
+      router.push(`/movies?q=${encodeURIComponent(searchQuery.trim())}`)
+      setIsSearchOpen(false)
+      setSearchResults({ movies: [], series: [] })
+      setSearchQuery('')
+    }
+    if (e.key === 'Escape') {
+      setIsSearchOpen(false)
+      setSearchResults({ movies: [], series: [] })
+      setSearchQuery('')
+    }
+  }
+
+  const closeSearch = () => {
+    setIsSearchOpen(false)
+    setSearchResults({ movies: [], series: [] })
+    setSearchQuery('')
+  }
+
+  const navigateToResult = (type: 'movie' | 'series', id: string | number) => {
+    const path = type === 'movie' ? `/movie/${id}` : `/series/${id}`
+    router.push(path)
+    closeSearch()
+  }
+
+  useEffect(() => {
     if (isLoggedIn) {
       fetch('/api/notifications')
         .then(res => res.json())
@@ -110,23 +182,90 @@ export default function Header() {
           {/* Right Side Actions */}
           <div className="flex items-center gap-4">
             {/* Search */}
-            <div className="relative">
+            <div className="relative" ref={searchContainerRef}>
               {isSearchOpen ? (
-                <div className="flex items-center bg-gray-900/90 border border-gray-700 rounded-md">
-                  <Input
-                    type="text"
-                    placeholder={t('search') + '...'}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-48 md:w-64 border-0 bg-transparent focus:ring-0"
-                    autoFocus
-                  />
-                  <button
-                    onClick={() => setIsSearchOpen(false)}
-                    className="p-2 text-gray-400 hover:text-white"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
+                <div className="flex flex-col">
+                  <div className="flex items-center bg-gray-900/90 border border-gray-700 rounded-md">
+                    <Input
+                      type="text"
+                      placeholder={t('searchMoviesAndSeries')}
+                      value={searchQuery}
+                      onChange={(e) => handleSearchChange(e.target.value)}
+                      onKeyDown={handleSearchKeyDown}
+                      className="w-48 md:w-64 border-0 bg-transparent focus:ring-0"
+                      autoFocus
+                    />
+                    {isSearching ? (
+                      <span className="p-2"><Loader2 className="h-4 w-4 text-gray-400 animate-spin" /></span>
+                    ) : (
+                      <button onClick={closeSearch} className="p-2 text-gray-400 hover:text-white">
+                        <X className="h-4 w-4" />
+                      </button>
+                    )}
+                  </div>
+                  {/* Results Dropdown */}
+                  {(searchResults.movies.length > 0 || searchResults.series.length > 0) && (
+                    <div className="absolute top-full mt-1 start-0 w-full min-w-[280px] bg-gray-900 border border-gray-700 rounded-md shadow-xl z-50 overflow-hidden">
+                      {searchResults.movies.length > 0 && (
+                        <div>
+                          <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-800/60 text-xs text-gray-400 uppercase tracking-wide">
+                            <Film className="h-3 w-3" />{t('movies')}
+                          </div>
+                          {searchResults.movies.map((movie: any) => (
+                            <button
+                              key={movie.id}
+                              className="flex items-center gap-3 w-full px-3 py-2 hover:bg-gray-800 transition-colors text-start"
+                              onClick={() => navigateToResult('movie', movie.id)}
+                            >
+                              {movie.poster ? (
+                                <img src={movie.poster} alt="" className="w-8 h-11 object-cover rounded flex-shrink-0" />
+                              ) : (
+                                <div className="w-8 h-11 bg-gray-700 rounded flex-shrink-0 flex items-center justify-center">
+                                  <Film className="h-4 w-4 text-gray-500" />
+                                </div>
+                              )}
+                              <span className="text-sm text-white truncate">{movie.title}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                      {searchResults.series.length > 0 && (
+                        <div>
+                          <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-800/60 text-xs text-gray-400 uppercase tracking-wide">
+                            <Tv className="h-3 w-3" />{t('series')}
+                          </div>
+                          {searchResults.series.map((s: any) => (
+                            <button
+                              key={s.id}
+                              className="flex items-center gap-3 w-full px-3 py-2 hover:bg-gray-800 transition-colors text-start"
+                              onClick={() => navigateToResult('series', s.id)}
+                            >
+                              {s.poster ? (
+                                <img src={s.poster} alt="" className="w-8 h-11 object-cover rounded flex-shrink-0" />
+                              ) : (
+                                <div className="w-8 h-11 bg-gray-700 rounded flex-shrink-0 flex items-center justify-center">
+                                  <Tv className="h-4 w-4 text-gray-500" />
+                                </div>
+                              )}
+                              <span className="text-sm text-white truncate">{s.title}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                      {searchQuery.trim() && (
+                        <button
+                          className="flex items-center gap-2 w-full px-3 py-2.5 border-t border-gray-700 hover:bg-gray-800 transition-colors text-sm text-gray-400 hover:text-white"
+                          onClick={() => {
+                            router.push(`/movies?q=${encodeURIComponent(searchQuery.trim())}`)
+                            closeSearch()
+                          }}
+                        >
+                          <Search className="h-3.5 w-3.5" />
+                          {t('searchResults')}: &ldquo;{searchQuery}&rdquo;
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
               ) : (
                 <button
