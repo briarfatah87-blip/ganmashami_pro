@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useAuth } from '@/lib/auth-context'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { useLanguage } from '@/lib/language-context'
 
 interface ReviewWithUser {
     id: string
@@ -24,6 +25,7 @@ interface ReviewWithUser {
 
 export default function ReviewSection({ contentId, contentType, contentTitle, contentPoster }: { contentId: string, contentType: 'movie' | 'series', contentTitle: string, contentPoster: string }) {
     const { user } = useAuth()
+    const { t } = useLanguage()
     const [reviews, setReviews] = useState<ReviewWithUser[]>([])
     const [loading, setLoading] = useState(true)
     const [submitting, setSubmitting] = useState(false)
@@ -99,7 +101,7 @@ export default function ReviewSection({ contentId, contentType, contentTitle, co
     return (
         <div className="py-8 border-t border-gray-800 mt-12">
             <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl font-bold text-white">Reviews & Ratings</h2>
+                <h2 className="text-2xl font-bold text-white">{t('reviewsAndRatings')}</h2>
                 {reviews.length > 0 && (
                     <div className="flex items-center gap-2">
                         <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />
@@ -120,7 +122,7 @@ export default function ReviewSection({ contentId, contentType, contentTitle, co
                         {reviews.length === 0 ? (
                             <div className="text-center py-12 bg-gray-900 rounded-lg">
                                 <Star className="h-12 w-12 text-gray-700 mx-auto mb-3" />
-                                <p className="text-gray-400 text-lg">No reviews yet. Be the first!</p>
+                                <p className="text-gray-400 text-lg">{t('noReviewsYetBeFirst')}</p>
                             </div>
                         ) : (
                             reviews.map((review) => (
@@ -163,21 +165,21 @@ export default function ReviewSection({ contentId, contentType, contentTitle, co
                     <div className="lg:col-span-1">
                         <div className="bg-gray-900 rounded-lg p-6 sticky top-24">
                             <h3 className="text-lg font-semibold text-white mb-4">
-                                {user ? 'Write a Review' : 'Log in to Review'}
+                                {user ? t('writeReview') : t('loginToReview')}
                             </h3>
 
                             {!user ? (
                                 <div className="text-center py-6">
                                     <UserIcon className="h-12 w-12 text-gray-700 mx-auto mb-3" />
-                                    <p className="text-gray-400 mb-4 text-sm">Join the community to share your thoughts.</p>
+                                    <p className="text-gray-400 mb-4 text-sm">{t('joinCommunityReview')}</p>
                                     <Button asChild className="w-full">
-                                        <a href="/login">Log In</a>
+                                        <a href="/login">{t('logIn')}</a>
                                     </Button>
                                 </div>
                             ) : (
                                 <form onSubmit={handleSubmit} className="space-y-4">
                                     <div>
-                                        <label className="block text-gray-400 text-sm mb-2">Rating</label>
+                                        <label className="block text-gray-400 text-sm mb-2">{t('ratingLabel')}</label>
                                         <div className="flex items-center gap-2">
                                             {[1, 2, 3, 4, 5].map((star) => (
                                                 <button
@@ -200,9 +202,9 @@ export default function ReviewSection({ contentId, contentType, contentTitle, co
                                     </div>
 
                                     <div>
-                                        <label className="block text-gray-400 text-sm mb-2">Review (Optional)</label>
+                                        <label className="block text-gray-400 text-sm mb-2">{t('reviewOptionalLabel')}</label>
                                         <Textarea
-                                            placeholder="What did you think about this?"
+                                            placeholder={t('whatDidYouThink')}
                                             className="bg-gray-800 border-gray-700 text-white min-h-[120px] resize-none focus:ring-red-500 focus:border-red-500"
                                             value={commentInput}
                                             onChange={(e) => setCommentInput(e.target.value)}
@@ -219,7 +221,7 @@ export default function ReviewSection({ contentId, contentType, contentTitle, co
                                         ) : (
                                             <>
                                                 <Send className="h-4 w-4 mr-2" />
-                                                Submit Review
+                                                {t('submitReview')}
                                             </>
                                         )}
                                     </Button>

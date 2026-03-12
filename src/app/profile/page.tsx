@@ -12,12 +12,13 @@ import { Badge } from '@/components/ui/badge'
 import ContentCard from '@/components/content/ContentCard'
 import { sampleMovies, sampleSeries } from '@/lib/sample-data'
 import { useAuth, User as AuthUser } from '@/lib/auth-context'
+import { useLanguage } from '@/lib/language-context'
 
 function ProfileContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const initialTab = searchParams.get('tab') || 'overview'
-
+  const { t } = useLanguage()
   const { user, isLoading: authLoading } = useAuth()
 
   const [favorites, setFavorites] = useState<any[]>([])
@@ -195,7 +196,7 @@ function ProfileContent() {
             <div className="flex-1 text-center md:text-left">
               <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mb-2">
                 <h1 className="text-2xl md:text-3xl font-bold text-white">{displayUser.username}</h1>
-                <Badge variant="secondary">Member since {new Date(displayUser.joinDate).getFullYear()}</Badge>
+                <Badge variant="secondary">{t('memberSince')} {new Date(displayUser.joinDate).getFullYear()}</Badge>
               </div>
               <p className="text-gray-400 mb-4">{displayUser.email}</p>
 
@@ -203,19 +204,19 @@ function ProfileContent() {
               <div className="flex flex-wrap justify-center md:justify-start gap-6">
                 <div className="text-center">
                   <p className="text-2xl font-bold text-white">{displayUser.stats.favorites}</p>
-                  <p className="text-sm text-gray-400">Favorites</p>
+                  <p className="text-sm text-gray-400">{t('favorites')}</p>
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-white">{displayUser.stats.watchLater}</p>
-                  <p className="text-sm text-gray-400">Watch Later</p>
+                  <p className="text-sm text-gray-400">{t('watchLater')}</p>
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-white">{displayUser.stats.watched}</p>
-                  <p className="text-sm text-gray-400">Watched</p>
+                  <p className="text-sm text-gray-400">{t('watched')}</p>
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-white">{displayUser.stats.reviews}</p>
-                  <p className="text-sm text-gray-400">Reviews</p>
+                  <p className="text-sm text-gray-400">{t('reviews')}</p>
                 </div>
               </div>
             </div>
@@ -225,12 +226,12 @@ function ProfileContent() {
               <Button variant="outline" size="sm" asChild>
                 <Link href="/settings">
                   <Settings className="h-4 w-4 mr-2" />
-                  Settings
+                  {t('settings')}
                 </Link>
               </Button>
               <Button size="sm">
                 <Edit className="h-4 w-4 mr-2" />
-                Edit Profile
+                {t('editProfile')}
               </Button>
             </div>
           </div>
@@ -241,27 +242,27 @@ function ProfileContent() {
           <TabsList className="bg-gray-900 mb-8 flex-wrap h-auto p-1">
             <TabsTrigger value="overview" className="gap-2">
               <User className="h-4 w-4" />
-              Overview
+              {t('overview')}
             </TabsTrigger>
             <TabsTrigger value="favorites" className="gap-2">
               <Heart className="h-4 w-4" />
-              Favorites
+              {t('favorites')}
             </TabsTrigger>
             <TabsTrigger value="watchlater" className="gap-2">
               <Clock className="h-4 w-4" />
-              Watch Later
+              {t('watchLater')}
             </TabsTrigger>
             <TabsTrigger value="history" className="gap-2">
               <History className="h-4 w-4" />
-              History
+              {t('history')}
             </TabsTrigger>
             <TabsTrigger value="reviews" className="gap-2">
               <Star className="h-4 w-4" />
-              Reviews
+              {t('reviews')}
             </TabsTrigger>
             <TabsTrigger value="reports" className="gap-2">
               <AlertCircle className="h-4 w-4" />
-              Reports
+              {t('reports')}
             </TabsTrigger>
           </TabsList>
 
@@ -271,7 +272,7 @@ function ProfileContent() {
               {/* Continue Watching */}
               {watchHistory.filter(h => !h.completed && h.progress > 0).length > 0 && (
                 <div>
-                  <h3 className="text-xl font-semibold text-white mb-4">Continue Watching</h3>
+                  <h3 className="text-xl font-semibold text-white mb-4">{t('continueWatching')}</h3>
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     {watchHistory.filter(h => !h.completed && h.progress > 0).map((item, idx) => {
                       // Fallback carefully: If duration is missing but progress is saved, we cap at 95% to leave it in "Continue"
@@ -294,7 +295,7 @@ function ProfileContent() {
                                 style={{ width: `${percent}%` }}
                               />
                             </div>
-                            <p className="text-xs text-gray-500 mt-1">{percent}% watched</p>
+                <p className="text-xs text-gray-500 mt-1">{percent}{t('percentComplete')}</p>
                           </div>
                         </div>
                       )
@@ -306,9 +307,9 @@ function ProfileContent() {
               {/* Recent Favorites */}
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl font-semibold text-white">Recent Favorites</h3>
+                  <h3 className="text-xl font-semibold text-white">{t('recentFavorites')}</h3>
                   <Link href="/profile?tab=favorites" className="text-[var(--theme-primary)] hover:text-[var(--theme-primary-hover)] text-sm">
-                    View all
+                    {t('viewAllLink')}
                   </Link>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -333,7 +334,7 @@ function ProfileContent() {
           <TabsContent value="favorites">
             <div>
               <h3 className="text-xl font-semibold text-white mb-4">
-                My Favorites ({favorites.length})
+                {t('myFavorites')} ({favorites.length})
               </h3>
               {favorites.length > 0 ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
@@ -353,8 +354,8 @@ function ProfileContent() {
               ) : (
                 <div className="text-center py-16">
                   <Heart className="h-16 w-16 text-gray-600 mx-auto mb-4" />
-                  <h4 className="text-lg font-medium text-white mb-2">No favorites yet</h4>
-                  <p className="text-gray-400">Start adding movies and series to your favorites!</p>
+                  <h4 className="text-lg font-medium text-white mb-2">{t('noFavoritesYet')}</h4>
+                  <p className="text-gray-400">{t('startAddingFavorites')}</p>
                 </div>
               )}
             </div>
@@ -364,7 +365,7 @@ function ProfileContent() {
           <TabsContent value="watchlater">
             <div>
               <h3 className="text-xl font-semibold text-white mb-4">
-                Watch Later ({watchLater.length})
+                {t('myWatchLater')} ({watchLater.length})
               </h3>
               {watchLater.length > 0 ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
@@ -384,8 +385,8 @@ function ProfileContent() {
               ) : (
                 <div className="text-center py-16">
                   <Clock className="h-16 w-16 text-gray-600 mx-auto mb-4" />
-                  <h4 className="text-lg font-medium text-white mb-2">Nothing in watch later</h4>
-                  <p className="text-gray-400">Save movies and series to watch them later!</p>
+                  <h4 className="text-lg font-medium text-white mb-2">{t('nothingInWatchLater')}</h4>
+                  <p className="text-gray-400">{t('saveForLater')}</p>
                 </div>
               )}
             </div>
@@ -394,7 +395,7 @@ function ProfileContent() {
           {/* History Tab */}
           <TabsContent value="history">
             <div>
-              <h3 className="text-xl font-semibold text-white mb-4">Watch History</h3>
+              <h3 className="text-xl font-semibold text-white mb-4">{t('watchHistory')}</h3>
               {watchHistory.length > 0 ? (
                 <div className="space-y-4">
                   {watchHistory.map((item, idx) => {
@@ -409,14 +410,14 @@ function ProfileContent() {
                             fill
                             className="object-cover"
                           />
-                          {!item.completed && (
-                            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-700">
-                              <div
-                                className="h-full bg-[var(--theme-primary)]"
-                                style={{ width: `${percent}%` }}
-                              />
-                            </div>
-                          )}
+                            {!item.completed && (
+                              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-700">
+                                <div
+                                  className="h-full bg-[var(--theme-primary)]"
+                                  style={{ width: `${percent}%` }}
+                                />
+                              </div>
+                            )}
                         </div>
                         <div className="flex-1 py-3 pr-4">
                           <Link href={`/${item.contentType || ('duration' in item ? 'movie' : 'series')}/${String(item.contentId || item.id).replace(/^(movie-|series-)/, '')}`}>
@@ -432,15 +433,15 @@ function ProfileContent() {
                             <p className="text-gray-400 text-sm mt-1">{item.genre}</p>
                           ) : null}
                           <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
-                            <span>Watched on {new Date(item.watchedAt || item.updatedAt).toLocaleDateString()}</span>
+                            <span>{t('watchedOn')} {new Date(item.watchedAt || item.updatedAt).toLocaleDateString()}</span>
                             {!item.completed && percent > 0 && (
                               <Badge variant="outline" className="text-xs text-gray-400 border-gray-700">
-                                {percent}% complete
+                                {percent}{t('percentComplete')}
                               </Badge>
                             )}
                             {item.completed && (
                               <Badge variant="outline" className="text-xs bg-green-500/10 text-green-500 border-green-500/20">
-                                Completed
+                                {t('completedBadge')}
                               </Badge>
                             )}
                           </div>
@@ -452,8 +453,8 @@ function ProfileContent() {
               ) : (
                 <div className="text-center py-16">
                   <History className="h-16 w-16 text-gray-600 mx-auto mb-4" />
-                  <h4 className="text-lg font-medium text-white mb-2">No watch history</h4>
-                  <p className="text-gray-400">Start watching to build your history!</p>
+                  <h4 className="text-lg font-medium text-white mb-2">{t('noWatchHistory')}</h4>
+                  <p className="text-gray-400">{t('startWatchingHistory')}</p>
                 </div>
               )}
             </div>
@@ -463,7 +464,7 @@ function ProfileContent() {
           <TabsContent value="reviews">
             <div>
               <h3 className="text-xl font-semibold text-white mb-4">
-                My Reviews ({userReviews.length})
+                {t('myReviews')} ({userReviews.length})
               </h3>
               {userReviews.length > 0 ? (
                 <div className="space-y-4">
@@ -507,8 +508,8 @@ function ProfileContent() {
               ) : (
                 <div className="text-center py-16">
                   <Star className="h-16 w-16 text-gray-600 mx-auto mb-4" />
-                  <h4 className="text-lg font-medium text-white mb-2">No reviews yet</h4>
-                  <p className="text-gray-400">Share your thoughts on movies and series!</p>
+                  <h4 className="text-lg font-medium text-white mb-2">{t('noReviewsYet')}</h4>
+                  <p className="text-gray-400">{t('shareThoughts')}</p>
                 </div>
               )}
             </div>
@@ -518,7 +519,7 @@ function ProfileContent() {
           <TabsContent value="reports">
             <div>
               <h3 className="text-xl font-semibold text-white mb-4">
-                My Reports ({userReports.length})
+                {t('myReports')} ({userReports.length})
               </h3>
               {userReports.length > 0 ? (
                 <div className="space-y-4">

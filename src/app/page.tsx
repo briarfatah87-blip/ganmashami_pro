@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import HeroSlider from '@/components/content/HeroSlider'
 import ContentRow from '@/components/content/ContentRow'
 import type { MappedMovie, MappedSeries } from '@/lib/xtream-api'
+import { useLanguage } from '@/lib/language-context'
 
 // Adapt API data to component format
 function toContentItem(item: MappedMovie | MappedSeries) {
@@ -23,6 +24,7 @@ function toContentItem(item: MappedMovie | MappedSeries) {
 }
 
 export default function Home() {
+  const { t } = useLanguage()
   const [movies, setMovies] = useState<MappedMovie[]>([])
   const [series, setSeries] = useState<MappedSeries[]>([])
   const [featuredItemsData, setFeaturedItemsData] = useState<(MappedMovie | MappedSeries)[]>([])
@@ -90,7 +92,7 @@ export default function Home() {
       <div className="container mx-auto px-4 -mt-32 relative z-10 space-y-8 pb-16">
         {newMovies.length > 0 && (
           <ContentRow
-            title="New Movies"
+            title={t('newMovies')}
             items={newMovies as Parameters<typeof ContentRow>[0]['items']}
             type="movie"
           />
@@ -98,7 +100,7 @@ export default function Home() {
 
         {newSeries.length > 0 && (
           <ContentRow
-            title="New TV Series"
+            title={t('newTVSeries')}
             items={newSeries as Parameters<typeof ContentRow>[0]['items']}
             type="series"
           />
@@ -106,7 +108,7 @@ export default function Home() {
 
         {topRatedMovies.length > 0 && (
           <ContentRow
-            title="Top Rated Movies"
+            title={t('topRatedMovies')}
             items={topRatedMovies as Parameters<typeof ContentRow>[0]['items']}
             type="movie"
           />
@@ -114,7 +116,7 @@ export default function Home() {
 
         {topRatedSeries.length > 0 && (
           <ContentRow
-            title="Top Rated Series"
+            title={t('topRatedSeries')}
             items={topRatedSeries as Parameters<typeof ContentRow>[0]['items']}
             type="series"
           />

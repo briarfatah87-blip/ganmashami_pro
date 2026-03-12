@@ -9,9 +9,11 @@ import { useAuth } from '@/lib/auth-context'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { useLanguage } from '@/lib/language-context'
 
 export default function LoginPage() {
   const router = useRouter()
+  const { t } = useLanguage()
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
@@ -62,8 +64,8 @@ export default function LoginPage() {
                 priority
               />
             </Link>
-            <CardTitle className="text-2xl text-white">Welcome Back</CardTitle>
-            <CardDescription>Sign in to your account to continue</CardDescription>
+            <CardTitle className="text-2xl text-white">{t('welcomeBack')}</CardTitle>
+            <CardDescription>{t('signInToAccount')}</CardDescription>
           </CardHeader>
 
           <CardContent>
@@ -75,12 +77,12 @@ export default function LoginPage() {
               )}
 
               <div className="space-y-2">
-                <label className="text-sm text-gray-400">Email</label>
+                <label className="text-sm text-gray-400">{t('email')}</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
                   <Input
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder={t('enterYourEmail')}
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="pl-10"
@@ -90,12 +92,12 @@ export default function LoginPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm text-gray-400">Password</label>
+                <label className="text-sm text-gray-400">{t('password')}</label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
                   <Input
                     type={showPassword ? 'text' : 'password'}
-                    placeholder="Enter your password"
+                    placeholder={t('enterYourPassword')}
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     className="pl-10 pr-10"
@@ -114,24 +116,24 @@ export default function LoginPage() {
               <div className="flex items-center justify-between">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input type="checkbox" className="rounded border-gray-600 bg-gray-800 text-red-600 focus:ring-red-600" />
-                  <span className="text-sm text-gray-400">Remember me</span>
+                  <span className="text-sm text-gray-400">{t('rememberMe')}</span>
                 </label>
                 <Link href="/forgot-password" className="text-sm text-red-500 hover:text-red-400">
-                  Forgot password?
+                  {t('forgotPassword')}
                 </Link>
               </div>
 
               <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
-                {isLoading ? 'Signing in...' : 'Sign In'}
+                {isLoading ? t('signingIn') : t('signIn')}
               </Button>
             </form>
           </CardContent>
 
           <CardFooter className="justify-center">
             <p className="text-gray-400 text-sm">
-              Don&apos;t have an account?{' '}
+              {t('dontHaveAccount')}{' '}
               <Link href="/signup" className="text-red-500 hover:text-red-400 font-medium">
-                Sign up
+                {t('signup')}
               </Link>
             </p>
           </CardFooter>

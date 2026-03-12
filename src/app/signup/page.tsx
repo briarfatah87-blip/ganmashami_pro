@@ -8,9 +8,11 @@ import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { useLanguage } from '@/lib/language-context'
 
 export default function SignupPage() {
   const router = useRouter()
+  const { t } = useLanguage()
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
@@ -26,12 +28,12 @@ export default function SignupPage() {
     setError('')
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match')
+      setError(t('passwordsDoNotMatch'))
       return
     }
 
     if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters')
+      setError(t('passwordTooShort'))
       return
     }
 
@@ -78,8 +80,8 @@ export default function SignupPage() {
                 priority
               />
             </Link>
-            <CardTitle className="text-2xl text-white">Create Account</CardTitle>
-            <CardDescription>Sign up to start streaming</CardDescription>
+            <CardTitle className="text-2xl text-white">{t('createAccount')}</CardTitle>
+            <CardDescription>{t('signUpToStream')}</CardDescription>
           </CardHeader>
 
           <CardContent>
@@ -91,12 +93,12 @@ export default function SignupPage() {
               )}
 
               <div className="space-y-2">
-                <label className="text-sm text-gray-400">Username</label>
+                <label className="text-sm text-gray-400">{t('username')}</label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
                   <Input
                     type="text"
-                    placeholder="Choose a username"
+                    placeholder={t('chooseUsername')}
                     value={formData.username}
                     onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                     className="pl-10"
@@ -106,12 +108,12 @@ export default function SignupPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm text-gray-400">Email</label>
+                <label className="text-sm text-gray-400">{t('email')}</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
                   <Input
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder={t('enterYourEmail')}
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="pl-10"
@@ -121,12 +123,12 @@ export default function SignupPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm text-gray-400">Password</label>
+                <label className="text-sm text-gray-400">{t('password')}</label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
                   <Input
                     type={showPassword ? 'text' : 'password'}
-                    placeholder="Create a password"
+                    placeholder={t('createPassword')}
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     className="pl-10 pr-10"
@@ -143,12 +145,12 @@ export default function SignupPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm text-gray-400">Confirm Password</label>
+                <label className="text-sm text-gray-400">{t('confirmPassword')}</label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
                   <Input
                     type={showPassword ? 'text' : 'password'}
-                    placeholder="Confirm your password"
+                    placeholder={t('confirmYourPassword')}
                     value={formData.confirmPassword}
                     onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                     className="pl-10"
@@ -165,24 +167,24 @@ export default function SignupPage() {
                   required
                 />
                 <label htmlFor="terms" className="text-sm text-gray-400">
-                  I agree to the{' '}
-                  <Link href="/terms" className="text-red-500 hover:text-red-400">Terms of Service</Link>
-                  {' '}and{' '}
-                  <Link href="/privacy" className="text-red-500 hover:text-red-400">Privacy Policy</Link>
+                  {t('iAgreeToThe')}{' '}
+                  <Link href="/terms" className="text-red-500 hover:text-red-400">{t('termsOfService')}</Link>
+                  {' '}{t('and')}{' '}
+                  <Link href="/privacy" className="text-red-500 hover:text-red-400">{t('privacyPolicy')}</Link>
                 </label>
               </div>
 
               <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
-                {isLoading ? 'Creating account...' : 'Create Account'}
+                {isLoading ? t('creatingAccount') : t('createAccount')}
               </Button>
             </form>
           </CardContent>
 
           <CardFooter className="justify-center">
             <p className="text-gray-400 text-sm">
-              Already have an account?{' '}
+              {t('alreadyHaveAccount')}{' '}
               <Link href="/login" className="text-red-500 hover:text-red-400 font-medium">
-                Sign in
+                {t('signIn')}
               </Link>
             </p>
           </CardFooter>

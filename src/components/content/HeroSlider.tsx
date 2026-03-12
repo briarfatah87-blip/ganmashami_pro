@@ -7,6 +7,7 @@ import { Play, Plus, Info, ChevronLeft, ChevronRight, Star, Clock, Eye } from 'l
 import { Button } from '@/components/ui/button'
 import { Movie, Series } from '@/lib/sample-data'
 import { useTheme } from '@/lib/theme-context'
+import { useLanguage } from '@/lib/language-context'
 
 interface HeroSliderProps {
   items: (Movie | Series)[]
@@ -17,6 +18,7 @@ export default function HeroSlider({ items }: HeroSliderProps) {
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const { currentTheme } = useTheme()
+  const { t } = useLanguage()
 
   useEffect(() => {
     if (!isAutoPlaying) return
@@ -81,7 +83,7 @@ export default function HeroSlider({ items }: HeroSliderProps) {
               className="px-4 py-1.5 rounded-full text-sm font-semibold text-white shadow-lg"
               style={{ backgroundColor: currentTheme.primary, boxShadow: `0 0 20px ${currentTheme.primary}40` }}
             >
-              {isMovie ? '🎬 Movie' : '📺 TV Series'}
+            {isMovie ? t('movieBadge') : t('tvSeriesBadge')}
             </span>
             <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-white text-sm font-medium">
               <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
@@ -135,14 +137,14 @@ export default function HeroSlider({ items }: HeroSliderProps) {
               style={{ backgroundColor: currentTheme.primary, boxShadow: `0 10px 40px ${currentTheme.primary}50` }}
             >
               <Play className="h-6 w-6 fill-current transition-transform group-hover:scale-110" />
-              Watch Now
+              {t('watchNow')}
             </Link>
             <Link 
               href={href}
               className="flex items-center gap-2 px-8 py-4 rounded-xl bg-white/10 backdrop-blur-md text-white font-bold text-lg border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105"
             >
               <Info className="h-6 w-6" />
-              More Info
+              {t('moreInfo')}
             </Link>
             <button className="flex items-center justify-center w-14 h-14 rounded-xl bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105">
               <Plus className="h-6 w-6" />

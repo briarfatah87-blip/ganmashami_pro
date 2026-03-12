@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import { useLanguage } from '@/lib/language-context'
 
 interface ReportIssueDialogProps {
     contentId: string
@@ -25,13 +26,14 @@ export function ReportIssueDialog({ contentId, contentType, contentTitle }: Repo
     const [details, setDetails] = useState('')
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [isSuccess, setIsSuccess] = useState(false)
+    const { t } = useLanguage()
 
     const issueOptions = [
-        'Server not working',
-        'Subtitle problem',
-        'Sound problem',
-        'Video playback issue',
-        'Incorrect metadata'
+        t('serverNotWorking'),
+        t('subtitleProblem'),
+        t('soundProblem'),
+        t('videoPlaybackIssue'),
+        t('incorrectMetadata'),
     ]
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -81,14 +83,14 @@ export function ReportIssueDialog({ contentId, contentType, contentTitle }: Repo
             <DialogTrigger asChild>
                 <Button variant="outline" size="xl">
                     <AlertCircle className="mr-2 h-5 w-5 text-red-500" />
-                    Report Issue
+                    {t('reportIssue')}
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md bg-gray-900 border-gray-800 text-white">
                 <DialogHeader>
-                    <DialogTitle className="text-xl">Report an Issue {contentTitle ? `with ${contentTitle}` : ''}</DialogTitle>
+                    <DialogTitle className="text-xl">{t('reportTitle')} {contentTitle ? `- ${contentTitle}` : ''}</DialogTitle>
                     <DialogDescription className="text-gray-400">
-                        Having trouble? Let us know what's wrong so our team can fix it as soon as possible.
+                        {t('havingTroubleDesc')}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -97,15 +99,15 @@ export function ReportIssueDialog({ contentId, contentType, contentTitle }: Repo
                         <div className="w-12 h-12 rounded-full bg-green-500/20 text-green-500 flex items-center justify-center mx-auto mb-4">
                             <AlertCircle className="w-6 h-6" />
                         </div>
-                        <h3 className="text-lg font-medium text-white mb-2">Report Submitted!</h3>
+                        <h3 className="text-lg font-medium text-white mb-2">{t('reportSubmitted')}!</h3>
                         <p className="text-gray-400 text-sm">
-                            Thank you for notifying us. You'll receive a notification when this issue is resolved.
+                            {t('reportSubmittedThankYou')}
                         </p>
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit} className="space-y-4 py-4">
                         <div className="space-y-2">
-                            <label className="text-sm font-medium text-gray-300">Issue Type</label>
+                            <label className="text-sm font-medium text-gray-300">{t('reportType')}</label>
                             <select
                                 value={issueType}
                                 onChange={(e) => setIssueType(e.target.value)}
@@ -122,10 +124,10 @@ export function ReportIssueDialog({ contentId, contentType, contentTitle }: Repo
 
                         <div className="space-y-2">
                             <label className="text-sm font-medium text-gray-300">
-                                Additional Details <span className="text-gray-500 font-normal">(Optional)</span>
+                                {t('additionalDetails')} <span className="text-gray-500 font-normal">({t('optional')})</span>
                             </label>
                             <Textarea
-                                placeholder="Describe the problem in more detail..."
+                                placeholder={t('describeTheProblem')}
                                 value={details}
                                 onChange={(e) => setDetails(e.target.value)}
                                 className="min-h-[100px] bg-gray-950 border-gray-800 resize-none focus-visible:ring-red-600"
@@ -137,7 +139,7 @@ export function ReportIssueDialog({ contentId, contentType, contentTitle }: Repo
                             className="w-full bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white"
                             disabled={isSubmitting}
                         >
-                            {isSubmitting ? 'Submitting...' : 'Submit Report'}
+                            {isSubmitting ? t('submitting') : t('submitReport')}
                         </Button>
                     </form>
                 )}

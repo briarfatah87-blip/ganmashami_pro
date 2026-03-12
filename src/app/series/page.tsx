@@ -10,10 +10,12 @@ import ContentCard from '@/components/content/ContentCard'
 import PageBanner from '@/components/content/PageBanner'
 import Pagination from '@/components/ui/Pagination'
 import type { MappedSeries, XtreamCategory } from '@/lib/xtream-api'
+import { useLanguage } from '@/lib/language-context'
 
 const ITEMS_PER_PAGE = 24
 
 export default function SeriesPage() {
+  const { t } = useLanguage()
   const [seriesList, setSeriesList] = useState<MappedSeries[]>([])
   const [categories, setCategories] = useState<XtreamCategory[]>([])
   const [loading, setLoading] = useState(true)
@@ -100,8 +102,8 @@ export default function SeriesPage() {
   return (
     <div className="min-h-screen bg-transparent">
       <PageBanner
-        title="TV Series"
-        subtitle={`Browse our collection of ${seriesList.length} TV series`}
+        title={t('series')}
+        subtitle={`${t('browseMoviesSubtitle')} ${seriesList.length} ${t('seriesCount')}`}
         icon={<Tv className="h-6 w-6 text-white" />}
       />
 
@@ -112,7 +114,7 @@ export default function SeriesPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
               <Input
                 type="text"
-                placeholder="Search TV series..."
+              placeholder={t('searchSeriesPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
                 className="pl-10"
@@ -124,9 +126,9 @@ export default function SeriesPage() {
               className="gap-2"
             >
               <SlidersHorizontal className="h-4 w-4" />
-              Filters
+              {t('filters')}
               {hasActiveFilters && (
-                <Badge className="ml-1 bg-red-600">Active</Badge>
+                <Badge className="ml-1 bg-red-600">{t('filterActive')}</Badge>
               )}
             </Button>
           </div>
@@ -134,13 +136,13 @@ export default function SeriesPage() {
           {showFilters && (
             <div className="flex flex-wrap gap-4 p-4 bg-gray-900 rounded-lg">
               <div className="space-y-2">
-                <label className="text-sm text-gray-400">Genre</label>
+                <label className="text-sm text-gray-400">{t('genre')}</label>
                 <Select value={selectedGenre} onValueChange={(v) => { setSelectedGenre(v); setCurrentPage(1); }}>
                   <SelectTrigger className="w-48">
-                    <SelectValue placeholder="All Genres" />
+                    <SelectValue placeholder={t('allGenres')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Genres</SelectItem>
+                    <SelectItem value="all">{t('allGenres')}</SelectItem>
                     {categories.map((cat) => (
                       <SelectItem key={cat.category_id} value={cat.category_name.trim()}>
                         {cat.category_name.trim()}
@@ -151,16 +153,16 @@ export default function SeriesPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm text-gray-400">Sort By</label>
+                <label className="text-sm text-gray-400">{t('sortBy')}</label>
                 <Select value={sortBy} onValueChange={setSortBy}>
                   <SelectTrigger className="w-40">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="newest">Newest First</SelectItem>
-                    <SelectItem value="oldest">Oldest First</SelectItem>
-                    <SelectItem value="rating">Top Rated</SelectItem>
-                    <SelectItem value="title">Title A-Z</SelectItem>
+                    <SelectItem value="newest">{t('newestFirst')}</SelectItem>
+                    <SelectItem value="oldest">{t('oldestFirst')}</SelectItem>
+                    <SelectItem value="rating">{t('topRated')}</SelectItem>
+                    <SelectItem value="title">{t('titleAZ')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -168,7 +170,7 @@ export default function SeriesPage() {
               {hasActiveFilters && (
                 <div className="flex items-end">
                   <Button variant="ghost" onClick={clearFilters} className="text-red-500">
-                    Clear Filters
+                    {t('clearFilters')}
                   </Button>
                 </div>
               )}
@@ -178,11 +180,11 @@ export default function SeriesPage() {
 
         <div className="mb-6 flex items-center justify-between">
           <p className="text-gray-400">
-            Showing {paginatedSeries.length} of {filteredSeries.length} series
-            {filteredSeries.length !== seriesList.length && ` (filtered from ${seriesList.length})`}
+            {t('showing')} {paginatedSeries.length} {t('of')} {filteredSeries.length} {t('seriesCount')}
+            {filteredSeries.length !== seriesList.length && ` (${t('filteredFrom')} ${seriesList.length})`}
           </p>
           <p className="text-gray-500 text-sm">
-            Page {currentPage} of {totalPages || 1}
+            {t('page')} {currentPage} {t('of')} {totalPages || 1}
           </p>
         </div>
 
@@ -212,9 +214,9 @@ export default function SeriesPage() {
         ) : (
           <div className="text-center py-16">
             <Filter className="h-16 w-16 text-gray-600 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">No series found</h3>
-            <p className="text-gray-400 mb-4">Try adjusting your search or filter criteria</p>
-            <Button onClick={clearFilters}>Clear All Filters</Button>
+            <h3 className="text-xl font-semibold text-white mb-2">{t('noSeriesFound')}</h3>
+            <p className="text-gray-400 mb-4">{t('tryAdjustingFilters')}</p>
+            <Button onClick={clearFilters}>{t('clearAllFilters')}</Button>
           </div>
         )}
       </div>

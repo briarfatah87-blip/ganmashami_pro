@@ -6,10 +6,12 @@ import Image from 'next/image'
 import { Facebook, Twitter, Instagram, Youtube } from 'lucide-react'
 import { useTheme } from '@/lib/theme-context'
 import { useSiteSettings } from '@/lib/site-settings-context'
+import { useLanguage } from '@/lib/language-context'
 
 export default function Footer() {
   const { currentTheme } = useTheme()
   const settings = useSiteSettings()
+  const { t } = useLanguage()
 
   return (
     <footer className="bg-gradient-to-b from-transparent to-[var(--background)] border-t border-white/5">
@@ -55,31 +57,31 @@ export default function Footer() {
 
           {/* Browse */}
           <div>
-            <h4 className="text-white font-semibold mb-5 text-sm uppercase tracking-wider">Browse</h4>
+            <h4 className="text-white font-semibold mb-5 text-sm uppercase tracking-wider">{t('browse')}</h4>
             <ul className="space-y-3">
               <li>
                 <Link href="/movies" className="text-gray-400 hover:text-white text-sm transition-colors hover:translate-x-1 inline-block">
-                  Movies
+                  {t('movies')}
                 </Link>
               </li>
               <li>
                 <Link href="/series" className="text-gray-400 hover:text-white text-sm transition-colors hover:translate-x-1 inline-block">
-                  TV Series
+                  {t('series')}
                 </Link>
               </li>
               <li>
                 <Link href="/movies?genre=action" className="text-gray-400 hover:text-white text-sm transition-colors hover:translate-x-1 inline-block">
-                  Action
+                  {t('action')}
                 </Link>
               </li>
               <li>
                 <Link href="/movies?genre=drama" className="text-gray-400 hover:text-white text-sm transition-colors hover:translate-x-1 inline-block">
-                  Drama
+                  {t('drama')}
                 </Link>
               </li>
               <li>
                 <Link href="/movies?genre=comedy" className="text-gray-400 hover:text-white text-sm transition-colors hover:translate-x-1 inline-block">
-                  Comedy
+                  {t('comedy')}
                 </Link>
               </li>
             </ul>
@@ -87,26 +89,26 @@ export default function Footer() {
 
           {/* Help */}
           <div>
-            <h4 className="text-white font-semibold mb-5 text-sm uppercase tracking-wider">Help</h4>
+            <h4 className="text-white font-semibold mb-5 text-sm uppercase tracking-wider">{t('help')}</h4>
             <ul className="space-y-3">
               <li>
                 <Link href="/faq" className="text-gray-400 hover:text-white text-sm transition-colors hover:translate-x-1 inline-block">
-                  FAQ
+                  {t('faq')}
                 </Link>
               </li>
               <li>
                 <Link href="/contact" className="text-gray-400 hover:text-white text-sm transition-colors hover:translate-x-1 inline-block">
-                  Contact Us
+                  {t('contactUs')}
                 </Link>
               </li>
               <li>
                 <Link href="/help" className="text-gray-400 hover:text-white text-sm transition-colors hover:translate-x-1 inline-block">
-                  Help Center
+                  {t('helpCenter')}
                 </Link>
               </li>
               <li>
                 <Link href="/devices" className="text-gray-400 hover:text-white text-sm transition-colors hover:translate-x-1 inline-block">
-                  Supported Devices
+                  {t('supportedDevices')}
                 </Link>
               </li>
             </ul>
@@ -114,21 +116,21 @@ export default function Footer() {
 
           {/* Legal */}
           <div>
-            <h4 className="text-white font-semibold mb-5 text-sm uppercase tracking-wider">Legal</h4>
+            <h4 className="text-white font-semibold mb-5 text-sm uppercase tracking-wider">{t('legal')}</h4>
             <ul className="space-y-3">
               <li>
                 <Link href="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors hover:translate-x-1 inline-block">
-                  Privacy Policy
+                  {t('privacyPolicy')}
                 </Link>
               </li>
               <li>
                 <Link href="/terms" className="text-gray-400 hover:text-white text-sm transition-colors hover:translate-x-1 inline-block">
-                  Terms of Service
+                  {t('termsOfService')}
                 </Link>
               </li>
               <li>
                 <Link href="/cookies" className="text-gray-400 hover:text-white text-sm transition-colors hover:translate-x-1 inline-block">
-                  Cookie Policy
+                  {t('cookiePolicy')}
                 </Link>
               </li>
             </ul>
@@ -138,12 +140,12 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-white/5 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-gray-500 text-sm">
-            © {new Date().getFullYear()} {settings.copyrightText}. All rights reserved.
+            © {new Date().getFullYear()} {settings.copyrightText}. {t('allRightsReserved')}
           </p>
           <div className="flex items-center gap-6 text-sm text-gray-500">
             <span className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              All systems operational
+              {t('allSystemsOperational')}
             </span>
           </div>
         </div>

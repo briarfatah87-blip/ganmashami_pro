@@ -6,6 +6,7 @@ import Link from 'next/link'
 import ContentCard from './ContentCard'
 import { Movie, Series } from '@/lib/sample-data'
 import { useTheme } from '@/lib/theme-context'
+import { useLanguage } from '@/lib/language-context'
 
 interface ContentRowProps {
   title: string
@@ -17,6 +18,7 @@ interface ContentRowProps {
 export default function ContentRow({ title, items, type, showViewAll = true }: ContentRowProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const { currentTheme } = useTheme()
+  const { t } = useLanguage()
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
@@ -47,7 +49,7 @@ export default function ContentRow({ title, items, type, showViewAll = true }: C
             className="text-sm font-medium transition-colors hover:underline"
             style={{ color: currentTheme.primary }}
           >
-            View All →
+            {t('viewAll')} →
           </Link>
         )}
       </div>
