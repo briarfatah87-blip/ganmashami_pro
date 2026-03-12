@@ -18,11 +18,13 @@ import ThemeSwitcher from '@/components/ui/theme-switcher'
 import { useTheme } from '@/lib/theme-context'
 import { useAuth } from '@/lib/auth-context'
 import { useSiteSettings } from '@/lib/site-settings-context'
+import { useLanguage } from '@/lib/language-context'
 
 export default function Header() {
   const { user, logout } = useAuth()
   const isLoggedIn = !!user
   const settings = useSiteSettings()
+  const { t, dir } = useLanguage()
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -70,10 +72,10 @@ export default function Header() {
   }
 
   const navItems = [
-    { label: 'Home', href: '/' },
-    { label: 'Movies', href: '/movies' },
-    { label: 'TV Series', href: '/series' },
-    { label: 'My Account', href: '/profile' },
+    { label: t('home'), href: '/' },
+    { label: t('movies'), href: '/movies' },
+    { label: t('series'), href: '/series' },
+    { label: t('profile'), href: '/profile' },
   ]
 
   return (
@@ -113,7 +115,7 @@ export default function Header() {
                 <div className="flex items-center bg-gray-900/90 border border-gray-700 rounded-md">
                   <Input
                     type="text"
-                    placeholder="Search movies, series..."
+                    placeholder={t('search') + '...'}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-48 md:w-64 border-0 bg-transparent focus:ring-0"
@@ -204,47 +206,47 @@ export default function Header() {
                   <DropdownMenuItem asChild>
                     <Link href="/profile" className="flex items-center">
                       <User className="mr-2 h-4 w-4" />
-                      Profile
+                      {t('profile')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/profile?tab=favorites" className="flex items-center">
                       <Heart className="mr-2 h-4 w-4" />
-                      Favorites
+                      {t('favorites')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/profile?tab=watchlater" className="flex items-center">
                       <Clock className="mr-2 h-4 w-4" />
-                      Watch Later
+                      {t('watchLater')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/profile?tab=history" className="flex items-center">
                       <History className="mr-2 h-4 w-4" />
-                      Watch History
+                      {t('watchHistory')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
                     <Link href="/settings" className="flex items-center">
                       <Settings className="mr-2 h-4 w-4" />
-                      Settings
+                      {t('settings')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="text-red-500 focus:text-red-500 cursor-pointer" onClick={() => logout()}>
                     <LogOut className="mr-2 h-4 w-4" />
-                    Sign Out
+                    {t('logout')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
               <div className="hidden md:flex items-center space-x-2">
                 <Button variant="ghost" asChild>
-                  <Link href="/login">Sign In</Link>
+                  <Link href="/login">{t('login')}</Link>
                 </Button>
                 <Button asChild>
-                  <Link href="/signup">Sign Up</Link>
+                  <Link href="/signup">{t('signup')}</Link>
                 </Button>
               </div>
             )}
@@ -280,13 +282,13 @@ export default function Header() {
                     href="/login"
                     className="text-gray-300 hover:text-white transition-colors py-2"
                   >
-                    Sign In
+                    {t('login')}
                   </Link>
                   <Link
                     href="/signup"
                     className="text-red-600 hover:text-red-500 transition-colors py-2"
                   >
-                    Sign Up
+                    {t('signup')}
                   </Link>
                 </>
               )}

@@ -9,11 +9,14 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useTheme, themeColors } from '@/lib/theme-context'
+import { useLanguage } from '@/lib/language-context'
+import { Language, languageNames } from '@/lib/translations'
 
 export default function SettingsPage() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
   const { currentTheme, setTheme } = useTheme()
+  const { language: currentLanguage, setLanguage } = useLanguage()
 
   const { user, isLoading: authLoading } = useAuth()
   const router = useRouter()
@@ -99,6 +102,16 @@ export default function SettingsPage() {
     })
   }
 
+  const handleLanguageChange = (lang: Language) => {
+    setLanguage(lang)
+    setSettings(prev => ({ ...prev, language: lang }))
+    fetch('/api/settings', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...settings, language: lang })
+    })
+  }
+
   if (authLoading || !user) return null
 
   return (
@@ -167,6 +180,30 @@ export default function SettingsPage() {
                     <Button>Primary Button</Button>
                     <Button variant="outline">Outline</Button>
                     <Button variant="secondary">Secondary</Button>
+                  </div>
+                </div>
+
+                {/* Language Selector */}
+                <div className="mt-6">
+                  <h3 className="text-white font-medium mb-1">Language / زمان</h3>
+                  <p className="text-sm text-gray-400 mb-4">Choose the display language for the interface</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {(Object.entries(languageNames) as [Language, string][]).map(([code, name]) => (
+                      <button
+                        key={code}
+                        onClick={() => handleLanguageChange(code)}
+                        className={`flex items-center justify-between px-4 py-3 rounded-lg border-2 transition-all ${
+                          currentLanguage === code
+                            ? 'border-white bg-gray-800'
+                            : 'border-gray-700 hover:border-gray-600 bg-gray-800/50'
+                        }`}
+                      >
+                        <span className="text-white font-medium">{name}</span>
+                        {currentLanguage === code && (
+                          <Check className="h-4 w-4 text-white" />
+                        )}
+                      </button>
+                    ))}
                   </div>
                 </div>
               </CardContent>
