@@ -571,3 +571,20 @@ ALTER TABLE IF EXISTS public.site_settings
 
 INSERT INTO public.site_settings (id, "updatedAt") VALUES ('default', NOW())
     ON CONFLICT (id) DO NOTHING;
+
+-- =====================================================
+-- SEED: Default Admin User
+-- email: admin@admin.com  |  password: admin@#2026
+-- =====================================================
+
+INSERT INTO public.users (id, email, username, password, role, "isActive", "createdAt", "updatedAt")
+VALUES (
+    gen_random_uuid()::text,
+    'admin@admin.com',
+    'admin',
+    '$2b$10$7YpsGxd0BDE721flgVwLqOl5Sj0X6W0Th4vvTpjYyggjHyNr9.TzG',
+    'admin',
+    true,
+    NOW(),
+    NOW()
+) ON CONFLICT (email) DO NOTHING;
