@@ -13,6 +13,7 @@ import { useLanguage } from '@/lib/language-context'
 import { Language, languageNames } from '@/lib/translations'
 
 export default function SettingsPage() {
+  const { t } = useLanguage()
   const [showCurrentPassword, setShowCurrentPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
   const { currentTheme, setTheme } = useTheme()
@@ -81,10 +82,10 @@ export default function SettingsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(settings)
       })
-      if (res.ok) setSaveMessage('Preferences saved successfully')
-      else setSaveMessage('Failed to save settings')
+      if (res.ok) setSaveMessage(t('preferencesSaved'))
+      else setSaveMessage(t('failedToSave'))
     } catch {
-      setSaveMessage('Error saving settings')
+      setSaveMessage(t('failedToSave'))
     } finally {
       setIsSaving(false)
       setTimeout(() => setSaveMessage(''), 3000)
@@ -117,25 +118,25 @@ export default function SettingsPage() {
   return (
     <div className="min-h-screen bg-transparent pt-24">
       <div className="container mx-auto px-4 max-w-3xl">
-        <h1 className="text-3xl font-bold text-white mb-8">Settings</h1>
+        <h1 className="text-3xl font-bold text-white mb-8">{t('settings')}</h1>
 
         <Tabs defaultValue="appearance" className="w-full">
           <TabsList className="bg-gray-900 mb-8 flex-wrap h-auto p-1">
             <TabsTrigger value="appearance" className="gap-2">
               <Palette className="h-4 w-4" />
-              Appearance
+              {t('appearance')}
             </TabsTrigger>
             <TabsTrigger value="profile" className="gap-2">
               <User className="h-4 w-4" />
-              Profile
+              {t('profileTab')}
             </TabsTrigger>
             <TabsTrigger value="password" className="gap-2">
               <Lock className="h-4 w-4" />
-              Password
+              {t('passwordTab')}
             </TabsTrigger>
             <TabsTrigger value="notifications" className="gap-2">
               <Bell className="h-4 w-4" />
-              Notifications
+              {t('notifications')}
             </TabsTrigger>
           </TabsList>
 
@@ -143,8 +144,8 @@ export default function SettingsPage() {
           <TabsContent value="appearance">
             <Card className="bg-gray-900 border-gray-800">
               <CardHeader>
-                <CardTitle className="text-white">Theme Color</CardTitle>
-                <CardDescription>Choose your preferred accent color for the interface</CardDescription>
+                <CardTitle className="text-white">{t('themeColor')}</CardTitle>
+                <CardDescription>{t('chooseThemeDesc')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-4 gap-4">
@@ -175,7 +176,7 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="mt-6 p-4 rounded-lg bg-gray-800">
-                  <p className="text-sm text-gray-400 mb-3">Preview</p>
+                  <p className="text-sm text-gray-400 mb-3">{t('preview')}</p>
                   <div className="flex items-center gap-3">
                     <Button>Primary Button</Button>
                     <Button variant="outline">Outline</Button>
@@ -185,8 +186,8 @@ export default function SettingsPage() {
 
                 {/* Language Selector */}
                 <div className="mt-6">
-                  <h3 className="text-white font-medium mb-1">Language / زمان</h3>
-                  <p className="text-sm text-gray-400 mb-4">Choose the display language for the interface</p>
+                  <h3 className="text-white font-medium mb-1">{t('language')}</h3>
+                  <p className="text-sm text-gray-400 mb-4">{t('chooseLanguageDesc')}</p>
                   <div className="grid grid-cols-2 gap-3">
                     {(Object.entries(languageNames) as [Language, string][]).map(([code, name]) => (
                       <button
@@ -214,26 +215,26 @@ export default function SettingsPage() {
           <TabsContent value="profile">
             <Card className="bg-gray-900 border-gray-800">
               <CardHeader>
-                <CardTitle className="text-white">Profile Information</CardTitle>
-                <CardDescription>Update your account profile information</CardDescription>
+                <CardTitle className="text-white">{t('profileInformation')}</CardTitle>
+                <CardDescription>{t('updateProfileInfo')}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-sm text-gray-400">Username</label>
+                  <label className="text-sm text-gray-400">{t('username')}</label>
                   <Input
                     value={profileData.username}
                     onChange={(e) => setProfileData({ ...profileData, username: e.target.value })}
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm text-gray-400">Email</label>
+                  <label className="text-sm text-gray-400">{t('email')}</label>
                   <Input
                     type="email"
                     value={profileData.email}
                     onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
                   />
                 </div>
-                <Button>Save Changes</Button>
+                <Button>{t('saveChanges')}</Button>
               </CardContent>
             </Card>
           </TabsContent>
@@ -242,12 +243,12 @@ export default function SettingsPage() {
           <TabsContent value="password">
             <Card className="bg-gray-900 border-gray-800">
               <CardHeader>
-                <CardTitle className="text-white">Change Password</CardTitle>
-                <CardDescription>Update your password to keep your account secure</CardDescription>
+                <CardTitle className="text-white">{t('changePassword')}</CardTitle>
+                <CardDescription>{t('updatePasswordDesc')}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-sm text-gray-400">Current Password</label>
+                  <label className="text-sm text-gray-400">{t('currentPassword')}</label>
                   <div className="relative">
                     <Input
                       type={showCurrentPassword ? 'text' : 'password'}
@@ -265,7 +266,7 @@ export default function SettingsPage() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm text-gray-400">New Password</label>
+                  <label className="text-sm text-gray-400">{t('newPassword')}</label>
                   <div className="relative">
                     <Input
                       type={showNewPassword ? 'text' : 'password'}
@@ -283,14 +284,14 @@ export default function SettingsPage() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm text-gray-400">Confirm New Password</label>
+                  <label className="text-sm text-gray-400">{t('confirmNewPassword')}</label>
                   <Input
                     type={showNewPassword ? 'text' : 'password'}
                     value={passwordData.confirmPassword}
                     onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
                   />
                 </div>
-                <Button>Update Password</Button>
+                <Button>{t('updatePassword')}</Button>
               </CardContent>
             </Card>
           </TabsContent>
@@ -299,14 +300,14 @@ export default function SettingsPage() {
           <TabsContent value="notifications">
             <Card className="bg-gray-900 border-gray-800">
               <CardHeader>
-                <CardTitle className="text-white">Notification Preferences</CardTitle>
-                <CardDescription>Manage how you receive notifications</CardDescription>
+                <CardTitle className="text-white">{t('notificationPreferences')}</CardTitle>
+                <CardDescription>{t('manageNotificationsDesc')}</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between py-3 border-b border-gray-800">
                   <div>
-                    <p className="text-white font-medium">New Releases</p>
-                    <p className="text-sm text-gray-400">Get notified about new movies and series</p>
+                    <p className="text-white font-medium">{t('notifyNewReleases')}</p>
+                    <p className="text-sm text-gray-400">{t('notifyNewReleasesDesc')}</p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" checked={settings.notifyNewReleases} onChange={(e) => setSettings({ ...settings, notifyNewReleases: e.target.checked })} className="sr-only peer" />
@@ -315,8 +316,8 @@ export default function SettingsPage() {
                 </div>
                 <div className="flex items-center justify-between py-3 border-b border-gray-800">
                   <div>
-                    <p className="text-white font-medium">Recommendations</p>
-                    <p className="text-sm text-gray-400">Personalized content suggestions</p>
+                    <p className="text-white font-medium">{t('notifyRecommendations')}</p>
+                    <p className="text-sm text-gray-400">{t('notifyRecommendationsDesc')}</p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" checked={settings.notifyRecommendations} onChange={(e) => setSettings({ ...settings, notifyRecommendations: e.target.checked })} className="sr-only peer" />
@@ -325,8 +326,8 @@ export default function SettingsPage() {
                 </div>
                 <div className="flex items-center justify-between py-3">
                   <div>
-                    <p className="text-white font-medium">Email Updates</p>
-                    <p className="text-sm text-gray-400">Receive updates via email</p>
+                    <p className="text-white font-medium">{t('emailUpdates')}</p>
+                    <p className="text-sm text-gray-400">{t('emailUpdatesDesc')}</p>
                   </div>
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" checked={settings.notifyEmailUpdates} onChange={(e) => setSettings({ ...settings, notifyEmailUpdates: e.target.checked })} className="sr-only peer" />
@@ -337,8 +338,8 @@ export default function SettingsPage() {
                 {/* Debug Tool: Send Test Notification */}
                 <div className="flex items-center justify-between py-3 border-y border-gray-800 my-4">
                   <div>
-                    <p className="text-white font-medium">Test Notification System</p>
-                    <p className="text-sm text-gray-400">Send a test alert to your account</p>
+                    <p className="text-white font-medium">{t('testNotificationSystem')}</p>
+                    <p className="text-sm text-gray-400">{t('testNotificationDesc')}</p>
                   </div>
                   <Button
                     variant="outline"
@@ -360,12 +361,12 @@ export default function SettingsPage() {
                       }
                     }}
                   >
-                    Ping Me
+                    {t('pingMe')}
                   </Button>
                 </div>
 
                 <Button onClick={handleSaveSettings} disabled={isSaving}>
-                  {isSaving ? 'Saving...' : 'Save Preferences'}
+                  {isSaving ? t('saving') : t('savePreferences')}
                 </Button>
                 {saveMessage && <p className="text-sm text-green-500 mt-2">{saveMessage}</p>}
               </CardContent>
