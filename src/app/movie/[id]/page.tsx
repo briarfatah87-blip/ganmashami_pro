@@ -9,10 +9,12 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import ReviewSection from '@/components/content/ReviewSection'
 import { ReportIssueDialog } from '@/components/content/ReportIssueDialog'
+import { useLanguage } from '@/lib/language-context'
 import type { MappedMovie } from '@/lib/xtream-api'
 
 export default function MoviePage() {
   const params = useParams()
+  const { t } = useLanguage()
   const [movie, setMovie] = useState<MappedMovie | null>(null)
   const [loading, setLoading] = useState(true)
   const [isFavorite, setIsFavorite] = useState(false)
@@ -83,7 +85,7 @@ export default function MoviePage() {
   if (!movie) {
     return (
       <div className="min-h-screen bg-transparent flex items-center justify-center">
-        <p className="text-white text-xl">Movie not found</p>
+        <p className="text-white text-xl">{t('movieNotFound')}</p>
       </div>
     )
   }
@@ -126,7 +128,7 @@ export default function MoviePage() {
           <div className="flex-1 pt-4">
             {/* Badges */}
             <div className="flex flex-wrap items-center gap-2 mb-4">
-              <Badge className="bg-red-600">Movie</Badge>
+              <Badge className="bg-red-600">{t('movieLabel')}</Badge>
               {movie.rating > 0 && (
                 <Badge variant="outline" className="flex items-center gap-1">
                   <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
@@ -207,7 +209,7 @@ export default function MoviePage() {
               <Button size="xl" asChild>
                 <Link href={`/movie/${movie.id}/watch`}>
                   <Play className="mr-2 h-5 w-5 fill-current" />
-                  Watch Now
+                  {t('watchNow')}
                 </Link>
               </Button>
 
@@ -215,7 +217,7 @@ export default function MoviePage() {
                 <Button size="xl" variant="outline" asChild>
                   <a href={`https://www.youtube.com/watch?v=${movie.youtubeTrailer}`} target="_blank" rel="noopener noreferrer">
                     <Play className="mr-2 h-5 w-5" />
-                    Trailer
+                    {t('trailer')}
                   </a>
                 </Button>
               )}
@@ -247,7 +249,7 @@ export default function MoviePage() {
                 }}
               >
                 <Heart className={`mr-2 h-5 w-5 ${isFavorite ? 'fill-current' : ''}`} />
-                {isFavorite ? 'In Favorites' : 'Add to Favorites'}
+                {isFavorite ? t('inFavorites') : t('addToFavorites')}
               </Button>
 
               <Button
@@ -279,12 +281,12 @@ export default function MoviePage() {
                 {isInWatchLater ? (
                   <>
                     <Check className="mr-2 h-5 w-5" />
-                    In Watch Later
+                    {t('inWatchLater')}
                   </>
                 ) : (
                   <>
                     <Clock className="mr-2 h-5 w-5" />
-                    Watch Later
+                    {t('watchLater')}
                   </>
                 )}
               </Button>
@@ -302,7 +304,7 @@ export default function MoviePage() {
                 <div className="flex items-start gap-3">
                   <User className="h-5 w-5 text-gray-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="text-gray-500 text-sm block">Director</span>
+                    <span className="text-gray-500 text-sm block">{t('director')}</span>
                     <p className="text-white font-medium">{movie.director}</p>
                   </div>
                 </div>
@@ -311,7 +313,7 @@ export default function MoviePage() {
                 <div className="flex items-start gap-3">
                   <Calendar className="h-5 w-5 text-gray-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="text-gray-500 text-sm block">Release Date</span>
+                    <span className="text-gray-500 text-sm block">{t('releaseDate')}</span>
                     <p className="text-white font-medium">{movie.releaseDate}</p>
                   </div>
                 </div>
@@ -320,7 +322,7 @@ export default function MoviePage() {
                 <div className="flex items-start gap-3">
                   <Clock className="h-5 w-5 text-gray-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="text-gray-500 text-sm block">Duration</span>
+                    <span className="text-gray-500 text-sm block">{t('duration')}</span>
                     <p className="text-white font-medium">{movie.durationText}</p>
                   </div>
                 </div>
@@ -329,7 +331,7 @@ export default function MoviePage() {
                 <div className="flex items-start gap-3">
                   <Globe className="h-5 w-5 text-gray-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="text-gray-500 text-sm block">Country</span>
+                    <span className="text-gray-500 text-sm block">{t('country')}</span>
                     <p className="text-white font-medium">{movie.country}</p>
                   </div>
                 </div>
@@ -338,7 +340,7 @@ export default function MoviePage() {
                 <div className="flex items-start gap-3">
                   <Monitor className="h-5 w-5 text-gray-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="text-gray-500 text-sm block">Quality</span>
+                    <span className="text-gray-500 text-sm block">{t('quality')}</span>
                     <p className="text-white font-medium">{movie.quality}</p>
                   </div>
                 </div>
@@ -347,7 +349,7 @@ export default function MoviePage() {
                 <div className="flex items-start gap-3">
                   <Volume2 className="h-5 w-5 text-gray-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="text-gray-500 text-sm block">Audio</span>
+                    <span className="text-gray-500 text-sm block">{t('audio')}</span>
                     <p className="text-white font-medium">{movie.audioChannels}</p>
                   </div>
                 </div>
@@ -356,7 +358,7 @@ export default function MoviePage() {
                 <div className="flex items-start gap-3">
                   <Star className="h-5 w-5 text-yellow-500 fill-yellow-500 mt-0.5 flex-shrink-0" />
                   <div>
-                    <span className="text-gray-500 text-sm block">Rating</span>
+                    <span className="text-gray-500 text-sm block">{t('rating')}</span>
                     <p className="text-white font-medium">{movie.rating.toFixed(1)} / 10</p>
                   </div>
                 </div>
@@ -366,7 +368,7 @@ export default function MoviePage() {
             {/* Cast */}
             {movie.cast && (
               <div className="py-6 border-t border-gray-800">
-                <h3 className="text-lg font-semibold text-white mb-3">Cast</h3>
+                <h3 className="text-lg font-semibold text-white mb-3">{t('cast')}</h3>
                 <div className="flex flex-wrap gap-2">
                   {movie.cast.split(',').map((actor, i) => (
                     <Badge key={i} variant="outline" className="text-gray-300 border-gray-700">

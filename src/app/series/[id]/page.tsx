@@ -11,10 +11,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import ReviewSection from '@/components/content/ReviewSection'
 import { ReportIssueDialog } from '@/components/content/ReportIssueDialog'
+import { useLanguage } from '@/lib/language-context'
 import type { MappedSeries } from '@/lib/xtream-api'
 
 export default function SeriesDetailPage() {
   const params = useParams()
+  const { t } = useLanguage()
   const [series, setSeries] = useState<MappedSeries | null>(null)
   const [loading, setLoading] = useState(true)
   const [isFavorite, setIsFavorite] = useState(false)
@@ -72,7 +74,7 @@ export default function SeriesDetailPage() {
   if (!series) {
     return (
       <div className="min-h-screen bg-transparent flex items-center justify-center">
-        <p className="text-white text-xl">Series not found</p>
+        <p className="text-white text-xl">{t('seriesNotFound')}</p>
       </div>
     )
   }
@@ -116,7 +118,7 @@ export default function SeriesDetailPage() {
           {/* Info */}
           <div className="flex-1 pt-4">
             <div className="flex flex-wrap items-center gap-2 mb-4">
-              <Badge className="bg-red-600">TV Series</Badge>
+              <Badge className="bg-red-600">{t('tvSeriesLabel')}</Badge>
               {series.rating > 0 && (
                 <Badge variant="outline" className="flex items-center gap-1">
                   <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
@@ -157,7 +159,7 @@ export default function SeriesDetailPage() {
                 <Button size="xl" asChild>
                   <Link href={`/series/${series.id}/watch?season=${currentSeason.id}&episode=${currentSeason.episodes[0].id}`}>
                     <Play className="mr-2 h-5 w-5 fill-current" />
-                    Watch Now
+                  {t('watchNow')}
                   </Link>
                 </Button>
               )}
@@ -190,7 +192,7 @@ export default function SeriesDetailPage() {
                 }}
               >
                 <Heart className={`mr-2 h-5 w-5 ${isFavorite ? 'fill-current' : ''}`} />
-                {isFavorite ? 'In Favorites' : 'Add to Favorites'}
+                {isFavorite ? t('inFavorites') : t('addToFavorites')}
               </Button>
 
               <Button
@@ -223,12 +225,12 @@ export default function SeriesDetailPage() {
                 {isInWatchLater ? (
                   <>
                     <Check className="mr-2 h-5 w-5" />
-                    In Watch Later
+                    {t('inWatchLater')}
                   </>
                 ) : (
                   <>
                     <Clock className="mr-2 h-5 w-5" />
-                    Watch Later
+                    {t('watchLater')}
                   </>
                 )}
               </Button>
@@ -247,21 +249,21 @@ export default function SeriesDetailPage() {
           <div className="mt-12">
             <Tabs defaultValue="episodes" className="w-full">
               <TabsList className="bg-gray-900 mb-6">
-                <TabsTrigger value="episodes">Episodes</TabsTrigger>
+                <TabsTrigger value="episodes">{t('episodes')}</TabsTrigger>
               </TabsList>
 
               <TabsContent value="episodes">
                 <div className="space-y-6">
                   <div className="flex items-center gap-4">
-                    <span className="text-white font-medium">Season:</span>
+                    <span className="text-white font-medium">{t('season')}:</span>
                     <Select value={selectedSeasonId} onValueChange={setSelectedSeasonId}>
                       <SelectTrigger className="w-48">
-                        <SelectValue placeholder="Select season" />
+                        <SelectValue placeholder={t('selectSeason')} />
                       </SelectTrigger>
                       <SelectContent>
                         {series.seasons.map((season) => (
                           <SelectItem key={season.id} value={season.id}>
-                            {season.title || `Season ${season.seasonNumber}`}
+                            {season.title || `${t('season')} ${season.seasonNumber}`}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -298,7 +300,7 @@ export default function SeriesDetailPage() {
                           <div className="flex items-start justify-between">
                             <div>
                               <h4 className="text-white font-medium mb-1">
-                                {episode.episodeNumber}. {episode.title || `Episode ${episode.episodeNumber}`}
+                                {episode.episodeNumber}. {episode.title || `${t('episode')} ${episode.episodeNumber}`}
                               </h4>
                               {episode.description && (
                                 <p className="text-gray-400 text-sm line-clamp-2">
