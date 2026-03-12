@@ -11,7 +11,7 @@ export async function GET(request: Request) {
     const cookieStore = await cookies()
     const token = cookieStore.get('seven_stream_session')?.value
     const decoded = token ? verifyToken(token) : null
-    
+
     if (!decoded) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -43,7 +43,7 @@ export async function GET(request: Request) {
       }
     })
 
-    const liveActivity = recentHistory.map((history: any) => ({
+    const liveActivity = recentHistory.map(history => ({
       id: history.id,
       user: {
         username: history.user.username,

@@ -3,11 +3,13 @@
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Facebook, Twitter, Instagram, Youtube, Mail, MapPin, Phone } from 'lucide-react'
+import { Facebook, Twitter, Instagram, Youtube } from 'lucide-react'
 import { useTheme } from '@/lib/theme-context'
+import { useSiteSettings } from '@/lib/site-settings-context'
 
 export default function Footer() {
   const { currentTheme } = useTheme()
+  const settings = useSiteSettings()
 
   return (
     <footer className="bg-gradient-to-b from-transparent to-[var(--background)] border-t border-white/5">
@@ -17,29 +19,37 @@ export default function Footer() {
           <div className="col-span-2">
             <Link href="/" className="flex items-center mb-6">
               <Image
-                src="/logo.png"
-                alt="Ganma Shami Logo"
+                src={settings.logoUrl}
+                alt="Logo"
                 width={380}
                 height={85}
                 className="h-[85px] w-auto object-contain"
               />
             </Link>
             <p className="text-gray-400 text-sm mb-6 leading-relaxed max-w-sm">
-              Your ultimate destination for movies and TV series. Stream unlimited content anytime, anywhere on any device.
+              {settings.footerDescription}
             </p>
             <div className="flex space-x-3">
-              <a href="#" className="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-all duration-300 hover:scale-110">
-                <Facebook className="h-5 w-5" />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-all duration-300 hover:scale-110">
-                <Twitter className="h-5 w-5" />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-all duration-300 hover:scale-110">
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-all duration-300 hover:scale-110">
-                <Youtube className="h-5 w-5" />
-              </a>
+              {settings.facebookUrl && (
+                <a href={settings.facebookUrl} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-all duration-300 hover:scale-110">
+                  <Facebook className="h-5 w-5" />
+                </a>
+              )}
+              {settings.twitterUrl && (
+                <a href={settings.twitterUrl} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-all duration-300 hover:scale-110">
+                  <Twitter className="h-5 w-5" />
+                </a>
+              )}
+              {settings.instagramUrl && (
+                <a href={settings.instagramUrl} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-all duration-300 hover:scale-110">
+                  <Instagram className="h-5 w-5" />
+                </a>
+              )}
+              {settings.youtubeUrl && (
+                <a href={settings.youtubeUrl} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-all duration-300 hover:scale-110">
+                  <Youtube className="h-5 w-5" />
+                </a>
+              )}
             </div>
           </div>
 
@@ -128,7 +138,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-white/5 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-gray-500 text-sm">
-            © {new Date().getFullYear()} Ganma Shami. All rights reserved.
+            © {new Date().getFullYear()} {settings.copyrightText}. All rights reserved.
           </p>
           <div className="flex items-center gap-6 text-sm text-gray-500">
             <span className="flex items-center gap-2">

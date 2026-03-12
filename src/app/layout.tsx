@@ -5,6 +5,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { ThemeProvider } from "@/lib/theme-context";
 import { AuthProvider } from "@/lib/auth-context";
+import { SiteSettingsProvider } from "@/lib/site-settings-context";
 import PopupAd from "@/components/layout/PopupAd";
 
 const inter = Inter({
@@ -27,10 +28,12 @@ export default function RootLayout({
       <body className={`${inter.variable} antialiased bg-modern-dark text-white min-h-screen`}>
         <ThemeProvider>
           <AuthProvider>
-            <Header />
-            <PopupAd />
-            <main>{children}</main>
-            <Footer />
+            <SiteSettingsProvider>
+              <Header />
+              <PopupAd />
+              <main>{children}</main>
+              <Footer />
+            </SiteSettingsProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

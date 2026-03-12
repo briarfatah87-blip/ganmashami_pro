@@ -13,7 +13,8 @@ import {
     Loader2,
     AlertCircle,
     Star,
-    Image as ImageIcon
+    Image as ImageIcon,
+    Settings
 } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
@@ -32,6 +33,19 @@ export default function AdminDashboard() {
     const [reviews, setReviews] = useState<any[]>([])
     const [ads, setAds] = useState<any[]>([])
     const [isLoading, setIsLoading] = useState(true)
+
+    // Site settings state
+    const [siteSettings, setSiteSettings] = useState({
+        logoUrl: '/logo.png',
+        footerDescription: 'Your ultimate destination for movies and TV series. Stream unlimited content anytime, anywhere on any device.',
+        copyrightText: 'Ganma Shami',
+        facebookUrl: '',
+        twitterUrl: '',
+        instagramUrl: '',
+        youtubeUrl: '',
+    })
+    const [isSavingSettings, setIsSavingSettings] = useState(false)
+    const [settingsSaved, setSettingsSaved] = useState(false)
 
     // Notification form state
     const [notifTitle, setNotifTitle] = useState('')
@@ -56,17 +70,30 @@ export default function AdminDashboard() {
     const fetchData = async () => {
         setIsLoading(true)
         try {
-            const [statsRes, reportsRes, reviewsRes, adsRes] = await Promise.all([
+            const [statsRes, reportsRes, reviewsRes, adsRes, siteSettingsRes] = await Promise.all([
                 fetch('/api/admin/stats'),
                 fetch('/api/admin/reports'),
                 fetch('/api/admin/reviews'),
-                fetch('/api/admin/ads')
+                fetch('/api/admin/ads'),
+                fetch('/api/admin/site-settings')
             ])
 
             if (statsRes.ok) setStats(await statsRes.json())
             if (reportsRes.ok) setReports(await reportsRes.json())
             if (reviewsRes.ok) setReviews(await reviewsRes.json())
             if (adsRes.ok) setAds(await adsRes.json())
+            if (siteSettingsRes.ok) {
+                const s = await siteSettingsRes.json()
+                setSiteSettings({
+                    logoUrl: s.logoUrl || '/logo.png',
+                    footerDescription: s.footerDescription || '',
+                    copyrightText: s.copyrightText || '',
+                    facebookUrl: s.facebookUrl || '',
+                    twitterUrl: s.twitterUrl || '',
+                    instagramUrl: s.instagramUrl || '',
+                    youtubeUrl: s.youtubeUrl || '',
+                })
+            }
         } catch (e) {
             console.error('Error fetching admin data:', e)
         } finally {
@@ -188,6 +215,27 @@ export default function AdminDashboard() {
         }
     }
 
+    const handleSaveSiteSettings = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setIsSavingSettings(true)
+        setSettingsSaved(false)
+        try {
+            const res = await fetch('/api/admin/site-settings', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(siteSettings)
+            })
+            if (res.ok) {
+                setSettingsSaved(true)
+                setTimeout(() => setSettingsSaved(false), 3000)
+            }
+        } catch (e) {
+            console.error(e)
+        } finally {
+            setIsSavingSettings(false)
+        }
+    }
+
     if (authLoading || isLoading) {
         return <div className="min-h-screen bg-gray-950 flex items-center justify-center pt-24"><Loader2 className="h-8 w-8 text-[var(--theme-primary)] animate-spin" /></div>
     }
@@ -226,6 +274,10 @@ export default function AdminDashboard() {
                         <TabsTrigger value="ads" className="gap-2 px-6 py-3">
                             <ImageIcon className="h-4 w-4" />
                             Ads Popup
+                        </TabsTrigger>
+                        <TabsTrigger value="site-settings" className="gap-2 px-6 py-3">
+                            <Settings className="h-4 w-4" />
+                            Site Settings
                         </TabsTrigger>
                     </TabsList>
 
@@ -530,6 +582,76 @@ export default function AdminDashboard() {
                                     </div>
                                 )}
                             </div>
+                        </div>
+                    </TabsContent>
+                    {/* Site Settings Tab */}
+                    <TabsContent value="site-settings">
+                        <div className="bg-gray-900 rounded-xl p-6 border border-gray-800 max-w-2xl mx-auto">
+                            <div className="text-center mb-6">
+                                <Settings className="h-12 w-12 text-[var(--theme-primary)] mx-auto mb-4" />
+                                <h2 className="text-xl font-bold text-white">Site Settings</h2>
+                                <p className="text-sm text-gray-400 mt-2">Manage logo, footer text, copyright, and social media links.</p>
+                            </div>
+                            <form onSubmit={handleSaveSiteSettings} className="space-y-5">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-300 mb-1">Logo URL <span className="text-red-500">*</span></label>
+                                    <Input
+                                        required
+                                        value={siteSettings.logoUrl}
+                                        onChange={e => setSiteSettings({ ...siteSettings, logoUrl: e.target.value })}
+                                        placeholder="/logo.png or https://example.com/logo.png"
+                                        className="bg-gray-950 border-gray-800 text-white"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-300 mb-1">Footer Description <span className="text-red-500">*</span></label>
+                                    <Textarea
+                                        required
+                                        value={siteSettings.footerDescription}
+                                        onChange={e => setSiteSettings({ ...siteSettings, footerDescription: e.target.value })}
+                                        className="bg-gray-950 border-gray-800 text-white min-h-[80px]"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-300 mb-1">Copyright Name <span className="text-red-500">*</span></label>
+                                    <Input
+                                        required
+                                        value={siteSettings.copyrightText}
+                                        onChange={e => setSiteSettings({ ...siteSettings, copyrightText: e.target.value })}
+                                        placeholder="Ganma Shami"
+                                        className="bg-gray-950 border-gray-800 text-white"
+                                    />
+                                    <p className="text-xs text-gray-500 mt-1">Appears as: © {new Date().getFullYear()} [your text]. All rights reserved.</p>
+                                </div>
+                                <div className="border-t border-gray-800 pt-4">
+                                    <h3 className="text-sm font-semibold text-gray-300 mb-3">Social Media Links (optional)</h3>
+                                    <div className="space-y-3">
+                                        <div>
+                                            <label className="block text-xs text-gray-400 mb-1">Facebook URL</label>
+                                            <Input value={siteSettings.facebookUrl} onChange={e => setSiteSettings({ ...siteSettings, facebookUrl: e.target.value })} placeholder="https://facebook.com/yourpage" className="bg-gray-950 border-gray-800 text-white" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs text-gray-400 mb-1">Twitter / X URL</label>
+                                            <Input value={siteSettings.twitterUrl} onChange={e => setSiteSettings({ ...siteSettings, twitterUrl: e.target.value })} placeholder="https://twitter.com/yourhandle" className="bg-gray-950 border-gray-800 text-white" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs text-gray-400 mb-1">Instagram URL</label>
+                                            <Input value={siteSettings.instagramUrl} onChange={e => setSiteSettings({ ...siteSettings, instagramUrl: e.target.value })} placeholder="https://instagram.com/yourpage" className="bg-gray-950 border-gray-800 text-white" />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs text-gray-400 mb-1">YouTube URL</label>
+                                            <Input value={siteSettings.youtubeUrl} onChange={e => setSiteSettings({ ...siteSettings, youtubeUrl: e.target.value })} placeholder="https://youtube.com/yourchannel" className="bg-gray-950 border-gray-800 text-white" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="pt-2">
+                                    <Button type="submit" disabled={isSavingSettings} className="w-full bg-[var(--theme-primary)] hover:bg-[var(--theme-primary-hover)] text-white">
+                                        {isSavingSettings ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <CheckCircle className="h-4 w-4 mr-2" />}
+                                        Save Settings
+                                    </Button>
+                                    {settingsSaved && <p className="text-center text-green-500 text-sm mt-3">✓ Settings saved successfully! Refresh the page to see changes.</p>}
+                                </div>
+                            </form>
                         </div>
                     </TabsContent>
                 </Tabs>

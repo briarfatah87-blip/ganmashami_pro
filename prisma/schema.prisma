@@ -1,10 +1,10 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 // =====================================================
@@ -260,4 +260,21 @@ model Advertisement {
   createdAt       DateTime @default(now())
 
   @@map("advertisements")
+}
+
+// =====================================================
+// 12. SITE SETTINGS (logo, footer text, social media)
+// =====================================================
+model SiteSettings {
+  id                String   @id @default("default")
+  logoUrl           String   @default("/logo.png")
+  footerDescription String   @default("Your ultimate destination for movies and TV series. Stream unlimited content anytime, anywhere on any device.")
+  copyrightText     String   @default("Ganma Shami")
+  facebookUrl       String?
+  twitterUrl        String?
+  instagramUrl      String?
+  youtubeUrl        String?
+  updatedAt         DateTime @updatedAt
+
+  @@map("site_settings")
 }

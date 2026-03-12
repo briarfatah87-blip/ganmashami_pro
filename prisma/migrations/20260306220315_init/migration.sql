@@ -280,3 +280,21 @@ CREATE INDEX "reports_status_idx" ON "reports"("status");
 
 -- AddForeignKey
 ALTER TABLE "reports" ADD CONSTRAINT "reports_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- CreateTable
+CREATE TABLE "site_settings" (
+    "id" TEXT NOT NULL DEFAULT 'default',
+    "logoUrl" TEXT NOT NULL DEFAULT '/logo.png',
+    "footerDescription" TEXT NOT NULL DEFAULT 'Your ultimate destination for movies and TV series. Stream unlimited content anytime, anywhere on any device.',
+    "copyrightText" TEXT NOT NULL DEFAULT 'Ganma Shami',
+    "facebookUrl" TEXT,
+    "twitterUrl" TEXT,
+    "instagramUrl" TEXT,
+    "youtubeUrl" TEXT,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "site_settings_pkey" PRIMARY KEY ("id")
+);
+
+-- Seed default site settings row
+INSERT INTO "site_settings" ("id", "updatedAt") VALUES ('default', NOW()) ON CONFLICT ("id") DO NOTHING;

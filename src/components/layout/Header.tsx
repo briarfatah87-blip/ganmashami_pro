@@ -17,10 +17,12 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import ThemeSwitcher from '@/components/ui/theme-switcher'
 import { useTheme } from '@/lib/theme-context'
 import { useAuth } from '@/lib/auth-context'
+import { useSiteSettings } from '@/lib/site-settings-context'
 
 export default function Header() {
   const { user, logout } = useAuth()
   const isLoggedIn = !!user
+  const settings = useSiteSettings()
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -81,8 +83,8 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <Image
-              src="/logo.png"
-              alt="Ganma Shami Logo"
+              src={settings.logoUrl}
+              alt="Logo"
               width={350}
               height={75}
               className="h-[75px] w-auto object-contain"

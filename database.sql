@@ -547,3 +547,27 @@ CREATE INDEX IF NOT EXISTS "watch_later_userId_idx"
     ("userId" COLLATE pg_catalog."default" ASC NULLS LAST)
     WITH (fillfactor=100, deduplicate_items=True)
     TABLESPACE pg_default;
+
+
+    -- Table: public.site_settings
+
+CREATE TABLE IF NOT EXISTS public.site_settings
+(
+    id text COLLATE pg_catalog."default" NOT NULL DEFAULT 'default'::text,
+    "logoUrl" text COLLATE pg_catalog."default" NOT NULL DEFAULT '/logo.png'::text,
+    "footerDescription" text COLLATE pg_catalog."default" NOT NULL DEFAULT 'Your ultimate destination for movies and TV series. Stream unlimited content anytime, anywhere on any device.'::text,
+    "copyrightText" text COLLATE pg_catalog."default" NOT NULL DEFAULT 'Ganma Shami'::text,
+    "facebookUrl" text COLLATE pg_catalog."default",
+    "twitterUrl" text COLLATE pg_catalog."default",
+    "instagramUrl" text COLLATE pg_catalog."default",
+    "youtubeUrl" text COLLATE pg_catalog."default",
+    "updatedAt" timestamp(3) without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT site_settings_pkey PRIMARY KEY (id)
+)
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.site_settings
+    OWNER to sevenstream;
+
+INSERT INTO public.site_settings (id, "updatedAt") VALUES ('default', NOW())
+    ON CONFLICT (id) DO NOTHING;
