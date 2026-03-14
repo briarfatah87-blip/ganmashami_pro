@@ -37,7 +37,8 @@ export async function GET(request: Request) {
           select: {
             id: true,
             username: true,
-            avatar: true
+            avatar: true,
+            createdAt: true
           }
         }
       }
@@ -46,6 +47,7 @@ export async function GET(request: Request) {
     const liveActivity = recentHistory.map(history => ({
       id: history.id,
       user: {
+        id: history.user.id,
         username: history.user.username,
         avatar: history.user.avatar
       },

@@ -165,17 +165,20 @@ export default function LiveWatchingPage() {
 
                     {/* User info */}
                     <div className="flex items-center justify-between mt-auto">
-                      <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={() => router.push(`/profile/${activity.user.id}`)}
+                        className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
+                      >
                         <Avatar className="w-5 h-5 border border-gray-700">
                           <AvatarImage src={activity.user.avatar} />
                           <AvatarFallback className="bg-gray-700 text-[10px]">
                             <User className="h-2.5 w-2.5" />
                           </AvatarFallback>
                         </Avatar>
-                        <span className="text-xs text-gray-300 font-medium truncate max-w-[80px]">
+                        <span className="text-xs text-[var(--theme-primary)] font-medium truncate max-w-[80px] hover:underline">
                           {activity.user.username}
                         </span>
-                      </div>
+                      </button>
                       <span className="text-[10px] text-gray-600 flex items-center gap-1">
                         <Clock className="w-2.5 h-2.5" />
                         {timeAgo(activity.content.updatedAt)}
