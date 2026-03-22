@@ -78,6 +78,7 @@ export default function Home() {
     ? featuredItemsData.map(toContentItem)
     : [...movies.filter(m => m.poster).slice(0, 3), ...series.filter(s => s.poster).slice(0, 3)].map(toContentItem)
 
+  // Use backend order (recently added) for homepage sliders
   const newMovies = movies.slice(0, 12).map(toContentItem)
   const newSeries = series.slice(0, 12).map(toContentItem)
   const topRatedMovies = [...movies].sort((a, b) => b.rating - a.rating).slice(0, 12).map(toContentItem)

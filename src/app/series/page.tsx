@@ -21,7 +21,7 @@ export default function SeriesPage() {
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedGenre, setSelectedGenre] = useState<string>('all')
-  const [sortBy, setSortBy] = useState<string>('newest')
+  const [sortBy, setSortBy] = useState<string>('recent')
   const [showFilters, setShowFilters] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -59,6 +59,9 @@ export default function SeriesPage() {
     }
 
     switch (sortBy) {
+      case 'recent':
+        // Use backend order (recently added)
+        break
       case 'newest':
         result.sort((a, b) => b.releaseYear - a.releaseYear)
         break
