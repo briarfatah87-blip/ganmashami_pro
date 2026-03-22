@@ -44,7 +44,7 @@ export async function GET(request: Request) {
       }
     })
 
-    const liveActivity = recentHistory.map(history => ({
+    const liveActivity = recentHistory.map((history: any) => ({
       id: history.id,
       user: {
         id: history.user.id,

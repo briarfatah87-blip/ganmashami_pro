@@ -15,7 +15,14 @@ export async function GET(request: Request) {
         // Build category name lookup
         const categoryMap = new Map(categories.map(c => [c.category_id, c.category_name]));
 
-        let movies = streams.map(s => mapVodToMovie(s, categoryMap.get(s.category_id)));
+        // Xtream "added" is a unix timestamp string; sort newest first for homepage/slider freshness.
+        const sortedStreams = [...streams].sort((a, b) => {
+            const aAdded = Number(a.added) || 0;
+            const bAdded = Number(b.added) || 0;
+            return bAdded - aAdded;
+        });
+
+        let movies = sortedStreams.map(s => mapVodToMovie(s, categoryMap.get(s.category_id)));
 
         if (limit > 0) {
             movies = movies.slice(0, limit);

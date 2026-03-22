@@ -212,7 +212,7 @@ async function fetchApi(action: string, params: Record<string, string> = {}): Pr
   const searchParams = new URLSearchParams(params);
   const url = `${API_URL}&action=${action}${searchParams.toString() ? '&' + searchParams.toString() : ''}`;
 
-  const res = await fetch(url, { next: { revalidate: 3600 } }); // Cache for 1 hour
+  const res = await fetch(url, { next: { revalidate: 60 } }); // Cache for 60 seconds
   if (!res.ok) throw new Error(`Xtream API error: ${res.status}`);
   return res.json();
 }

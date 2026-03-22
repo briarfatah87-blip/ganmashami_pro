@@ -34,8 +34,8 @@ export default function Home() {
     async function fetchData() {
       try {
         const [moviesRes, seriesRes] = await Promise.all([
-          fetch('/api/movies?limit=50'),
-          fetch('/api/series?limit=50'),
+          fetch('/api/movies?limit=50', { cache: 'no-store' }),
+          fetch('/api/series?limit=50', { cache: 'no-store' }),
         ])
         const moviesData = await moviesRes.json()
         const seriesData = await seriesRes.json()
