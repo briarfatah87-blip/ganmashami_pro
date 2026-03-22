@@ -21,7 +21,7 @@ export default function MoviesPage() {
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedGenre, setSelectedGenre] = useState<string>('all')
-  const [sortBy, setSortBy] = useState<string>('newest')
+  const [sortBy, setSortBy] = useState<string>('recent')
   const [showFilters, setShowFilters] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -59,6 +59,9 @@ export default function MoviesPage() {
     }
 
     switch (sortBy) {
+      case 'recent':
+        // Use backend order (recently added)
+        break
       case 'newest':
         result.sort((a, b) => b.releaseYear - a.releaseYear)
         break
@@ -99,6 +102,15 @@ export default function MoviesPage() {
     )
   }
 
+  // Sort options for dropdown
+  const sortOptions = [
+    { value: 'recent', label: 'Recently Added' },
+    { value: 'newest', label: 'Newest First' },
+    { value: 'oldest', label: 'Oldest First' },
+    { value: 'rating', label: 'Top Rated' },
+    { value: 'title', label: 'Title A-Z' },
+  ]
+
   return (
     <div className="min-h-screen bg-transparent">
       <PageBanner
@@ -121,45 +133,44 @@ export default function MoviesPage() {
               />
             </div>
             <Button
-              variant="outline"
-              onClick={() => setShowFilters(!showFilters)}
-              className="gap-2"
-            >
-              <SlidersHorizontal className="h-4 w-4" />
-              {t('filters')}
-              {hasActiveFilters && (
-                <Badge className="ml-1 bg-red-600">{t('filterActive')}</Badge>
-              )}
-            </Button>
-          </div>
-
-          {showFilters && (
-            <div className="flex flex-wrap gap-4 p-4 bg-gray-900 rounded-lg">
-              <div className="space-y-2">
-                <label className="text-sm text-gray-400">{t('genre')}</label>
-                <Select value={selectedGenre} onValueChange={(v) => { setSelectedGenre(v); setCurrentPage(1); }}>
-                  <SelectTrigger className="w-48">
-                    <SelectValue placeholder={t('allGenres')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">{t('allGenres')}</SelectItem>
-                    {categories.map((cat) => (
-                      <SelectItem key={cat.category_id} value={cat.category_name}>
-                        {cat.category_name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm text-gray-400">{t('sortBy')}</label>
-                <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-40">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="newest">{t('newestFirst')}</SelectItem>
+              return (
+                <>
+                  <PageBanner title={t('movies')} description={t('browseMoviesDesc')} />
+                  <div className="container mx-auto px-4 py-8">
+                    <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+                      <div className="flex flex-col md:flex-row gap-4 md:items-end">
+                        <Input
+                          placeholder={t('searchMovies')}
+                          value={searchQuery}
+                          onChange={e => setSearchQuery(e.target.value)}
+                          className="w-full md:w-64"
+                        />
+                        <Select value={selectedGenre} onValueChange={setSelectedGenre}>
+                          <SelectTrigger className="w-full md:w-48">
+                            <SelectValue>{t('genre')}</SelectValue>
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">{t('allGenres')}</SelectItem>
+                            {categories.map(cat => (
+                              <SelectItem key={cat.category_id} value={cat.category_name}>{cat.category_name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="flex gap-4 items-end">
+                        <Select value={sortBy} onValueChange={setSortBy}>
+                          <SelectTrigger className="w-48">
+                            <SelectValue>{sortOptions.find(opt => opt.value === sortBy)?.label || t('sortBy')}</SelectValue>
+                          </SelectTrigger>
+                          <SelectContent>
+                            {sortOptions.map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Button variant="outline" onClick={clearFilters} disabled={!hasActiveFilters}>{t('clearFilters')}</Button>
+                      </div>
+                    </div>
                     <SelectItem value="oldest">{t('oldestFirst')}</SelectItem>
                     <SelectItem value="rating">{t('topRated')}</SelectItem>
                     <SelectItem value="title">{t('titleAZ')}</SelectItem>

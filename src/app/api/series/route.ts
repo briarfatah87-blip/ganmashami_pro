@@ -8,7 +8,14 @@ export async function GET(request: Request) {
         const limit = parseInt(searchParams.get('limit') || '0');
 
         const seriesList = await getSeries(categoryId);
-        let mapped = seriesList.map(s => mapSeriesToApp(s));
+        // Xtream "last_modified" is a unix timestamp string; show newest updates first.
+        const sortedSeries = [...seriesList].sort((a, b) => {
+            const aModified = Number(a.last_modified) || 0;
+            const bModified = Number(b.last_modified) || 0;
+            return bModified - aModified;
+        });
+
+        let mapped = sortedSeries.map(s => mapSeriesToApp(s));
 
         if (limit > 0) {
             mapped = mapped.slice(0, limit);
