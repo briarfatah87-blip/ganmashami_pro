@@ -204,7 +204,7 @@ export default function VideoPlayer({
       {/* Play button overlay (when paused) */}
       {!isPlaying && !isBuffering && (
         <button
-          onClick={togglePlay}
+          onClick={(e) => { e.stopPropagation(); togglePlay(); }}
           className="absolute inset-0 flex items-center justify-center bg-black/30"
         >
           <div className="w-14 h-14 md:w-20 md:h-20 rounded-full bg-red-600 flex items-center justify-center hover:bg-red-700 transition-colors">
