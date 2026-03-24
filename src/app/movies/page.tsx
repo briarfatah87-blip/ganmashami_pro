@@ -120,18 +120,31 @@ export default function MoviesPage() {
       />
 
       <div className="container mx-auto px-4 py-8">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
-          <div className="flex flex-col md:flex-row gap-4 md:items-end w-full md:w-auto">
-            <div className="relative w-full md:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
-              <Input
-                type="text"
-                placeholder={t('searchMoviesPlaceholder')}
-                value={searchQuery}
-                onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
-                className="pl-10 w-full"
-              />
-            </div>
+        {/* Search + Filter Toggle */}
+        <div className="flex gap-3 mb-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
+            <Input
+              type="text"
+              placeholder={t('searchMoviesPlaceholder')}
+              value={searchQuery}
+              onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+              className="pl-10 w-full"
+            />
+          </div>
+          <Button
+            variant="outline"
+            onClick={() => setShowFilters(!showFilters)}
+            className="flex items-center gap-2 shrink-0"
+          >
+            <SlidersHorizontal className="h-4 w-4" />
+            {t('filters') || 'Filters'}
+          </Button>
+        </div>
+
+        {/* Collapsible Filters */}
+        {showFilters && (
+          <div className="flex flex-col md:flex-row gap-3 mb-4 p-4 rounded-lg bg-gray-800/50 border border-white/10">
             <Select value={selectedGenre} onValueChange={(val) => { setSelectedGenre(val); setCurrentPage(1); }}>
               <SelectTrigger className="w-full md:w-48">
                 <SelectValue>{t('genre')}</SelectValue>
@@ -143,8 +156,6 @@ export default function MoviesPage() {
                 ))}
               </SelectContent>
             </Select>
-          </div>
-          <div className="flex gap-4 items-end w-full md:w-auto">
             <Select value={sortBy} onValueChange={(val) => { setSortBy(val); setCurrentPage(1); }}>
               <SelectTrigger className="w-full md:w-48">
                 <SelectValue>{sortOptions.find(opt => opt.value === sortBy)?.label || t('sortBy')}</SelectValue>
@@ -155,11 +166,11 @@ export default function MoviesPage() {
                 ))}
               </SelectContent>
             </Select>
-            <Button variant="outline" onClick={clearFilters} disabled={!hasActiveFilters}>
+            <Button variant="outline" onClick={clearFilters} disabled={!hasActiveFilters} className="w-full md:w-auto">
               {t('clearFilters')}
             </Button>
           </div>
-        </div>
+        )}
 
         <div className="mb-6 flex items-center justify-between">
           <p className="text-gray-400">
