@@ -1,6 +1,19 @@
-import React, { useState, useEffect, useMemo, Suspense } from 'react'
+"use client"
 
-// ... imports remain the same ...
+import React, { useState, useEffect, useMemo, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { Search, Filter, SlidersHorizontal, Film, Loader2 } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Badge } from '@/components/ui/badge'
+import ContentCard from '@/components/content/ContentCard'
+import PageBanner from '@/components/content/PageBanner'
+import Pagination from '@/components/ui/Pagination'
+import type { MappedMovie, XtreamCategory } from '@/lib/xtream-api'
+import { useLanguage } from '@/lib/language-context'
+
+const ITEMS_PER_PAGE = 24
 
 function MoviesPageContent() {
   const { t } = useLanguage()
