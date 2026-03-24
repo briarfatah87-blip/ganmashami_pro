@@ -15,6 +15,7 @@ export default function SignupPage() {
   const { t } = useLanguage()
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -51,9 +52,10 @@ export default function SignupPage() {
       })
 
       if (res.ok) {
-        // Successful registration auto-logs in via the API (sets session cookie)
-        // Redirection to login is fine, or we can go to root. Let's go to root since we're logged in now.
-        router.push('/')
+        setShowSuccess(true)
+        setTimeout(() => {
+          router.push('/login')
+        }, 3000)
       } else {
         const data = await res.json()
         setError(data.error || 'Failed to create account')
@@ -190,6 +192,22 @@ export default function SignupPage() {
           </CardFooter>
         </Card>
       </div>
+
+      {showSuccess && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+          <div className="bg-gray-800 border border-gray-700 p-8 rounded-2xl shadow-2xl max-w-md w-full text-center space-y-4">
+            <h3 className="text-xl font-bold text-white mb-2 leading-relaxed">
+              🎉 Your account has been successfully created!
+            </h3>
+            <p className="text-gray-300 text-lg leading-relaxed">
+              You are being redirected to the login page—please log in to continue. <span className="inline-block translate-y-0.5">✅</span>
+            </p>
+            <div className="pt-4 flex justify-center">
+              <div className="animate-spin w-6 h-6 border-2 border-red-500 border-t-transparent rounded-full"></div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

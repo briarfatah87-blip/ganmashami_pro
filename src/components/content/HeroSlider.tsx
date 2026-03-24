@@ -58,7 +58,7 @@ export default function HeroSlider({ items }: HeroSliderProps) {
   const href = isMovie ? `/movie/${currentItem.id}` : `/series/${currentItem.id}`
 
   return (
-    <div className="relative h-[75vh] md:h-[90vh] overflow-hidden">
+    <div className="relative h-[65vh] md:h-[90vh] overflow-hidden">
       {/* Background Image with transition */}
       <div className={`absolute inset-0 transition-all duration-700 ${isTransitioning ? 'scale-105 opacity-50' : 'scale-100 opacity-100'}`}>
         <Image
@@ -76,32 +76,32 @@ export default function HeroSlider({ items }: HeroSliderProps) {
       <div className="absolute inset-0 bg-gradient-to-b from-[var(--background)]/60 via-transparent to-transparent h-32" />
 
       {/* Content */}
-      <div className={`relative h-full container mx-auto px-4 flex items-center transition-all duration-500 ${isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
+      <div className={`relative h-full container mx-auto px-4 flex items-end md:items-center pb-16 md:pb-0 transition-all duration-500 ${isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
         <div className="max-w-2xl pt-20">
           {/* Type Badge with glow */}
-          <div className="flex items-center gap-3 mb-6">
+          <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-3 md:mb-6">
             <span 
-              className="px-4 py-1.5 rounded-full text-sm font-semibold text-white shadow-lg"
+              className="px-3 md:px-4 py-1 md:py-1.5 rounded-full text-xs md:text-sm font-semibold text-white shadow-lg"
               style={{ backgroundColor: currentTheme.primary, boxShadow: `0 0 20px ${currentTheme.primary}40` }}
             >
             {isMovie ? t('movieBadge') : t('tvSeriesBadge')}
             </span>
-            <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-white text-sm font-medium">
-              <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+            <span className="flex items-center gap-1 px-2 md:px-3 py-1 md:py-1.5 rounded-full bg-white/10 backdrop-blur-md text-white text-xs md:text-sm font-medium">
+              <Star className="h-3 w-3 md:h-4 md:w-4 text-yellow-400 fill-yellow-400" />
               {currentItem.rating.toFixed(1)}
             </span>
-            <span className="px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-white text-sm">
+            <span className="hidden sm:inline-block px-2 md:px-3 py-1 md:py-1.5 rounded-full bg-white/10 backdrop-blur-md text-white text-xs md:text-sm">
               {currentItem.genre}
             </span>
           </div>
 
           {/* Title with text shadow */}
-          <h1 className="text-5xl md:text-7xl font-black text-white mb-4 leading-[1.1] tracking-tight drop-shadow-2xl">
+          <h1 className="text-2xl sm:text-4xl md:text-7xl font-black text-white mb-2 md:mb-4 leading-[1.1] tracking-tight drop-shadow-2xl">
             {currentItem.title}
           </h1>
 
           {/* Meta info */}
-          <div className="flex items-center gap-4 text-gray-300 text-sm mb-4">
+          <div className="flex flex-wrap items-center gap-2 md:gap-4 text-gray-300 text-xs md:text-sm mb-2 md:mb-4">
             <span className="font-semibold text-white">{currentItem.releaseYear}</span>
             <span className="w-1 h-1 rounded-full bg-gray-500" />
             {isMovie && (currentItem as Movie).duration && (
@@ -126,28 +126,28 @@ export default function HeroSlider({ items }: HeroSliderProps) {
           </div>
 
           {/* Description */}
-          <p className="text-gray-300 text-lg mb-8 line-clamp-3 leading-relaxed max-w-xl">
+          <p className="hidden md:block text-gray-300 text-lg mb-8 line-clamp-3 leading-relaxed max-w-xl">
             {currentItem.description}
           </p>
 
           {/* Buttons - Modern style */}
-          <div className="flex flex-wrap items-center gap-4">
+          <div className="flex flex-wrap items-center gap-2 md:gap-4 mt-3 md:mt-0">
             <Link 
               href={`${href}/watch`}
-              className="group flex items-center gap-2 px-8 py-4 rounded-xl text-white font-bold text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl"
+              className="group flex items-center gap-2 px-5 py-2.5 md:px-8 md:py-4 rounded-xl text-white font-bold text-sm md:text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl"
               style={{ backgroundColor: currentTheme.primary, boxShadow: `0 10px 40px ${currentTheme.primary}50` }}
             >
-              <Play className="h-6 w-6 fill-current transition-transform group-hover:scale-110" />
+              <Play className="h-4 w-4 md:h-6 md:w-6 fill-current transition-transform group-hover:scale-110" />
               {t('watchNow')}
             </Link>
             <Link 
               href={href}
-              className="flex items-center gap-2 px-8 py-4 rounded-xl bg-white/10 backdrop-blur-md text-white font-bold text-lg border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105"
+              className="flex items-center gap-2 px-5 py-2.5 md:px-8 md:py-4 rounded-xl bg-white/10 backdrop-blur-md text-white font-bold text-sm md:text-lg border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105"
             >
-              <Info className="h-6 w-6" />
+              <Info className="h-4 w-4 md:h-6 md:w-6" />
               {t('moreInfo')}
             </Link>
-            <button className="flex items-center justify-center w-14 h-14 rounded-xl bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105">
+            <button className="hidden md:flex items-center justify-center w-14 h-14 rounded-xl bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105">
               <Plus className="h-6 w-6" />
             </button>
           </div>
@@ -157,19 +157,19 @@ export default function HeroSlider({ items }: HeroSliderProps) {
       {/* Navigation Arrows - RTL-aware */}
       <button
         onClick={isRTL ? goToNext : goToPrevious}
-        className="absolute start-6 top-1/2 -translate-y-1/2 w-14 h-14 rounded-xl bg-white/10 backdrop-blur-md text-white flex items-center justify-center hover:bg-white/20 transition-all duration-300 border border-white/10 hover:scale-110"
+        className="hidden md:flex absolute start-6 top-1/2 -translate-y-1/2 w-14 h-14 rounded-xl bg-white/10 backdrop-blur-md text-white items-center justify-center hover:bg-white/20 transition-all duration-300 border border-white/10 hover:scale-110"
       >
         {isRTL ? <ChevronRight className="h-7 w-7" /> : <ChevronLeft className="h-7 w-7" />}
       </button>
       <button
         onClick={isRTL ? goToPrevious : goToNext}
-        className="absolute end-6 top-1/2 -translate-y-1/2 w-14 h-14 rounded-xl bg-white/10 backdrop-blur-md text-white flex items-center justify-center hover:bg-white/20 transition-all duration-300 border border-white/10 hover:scale-110"
+        className="hidden md:flex absolute end-6 top-1/2 -translate-y-1/2 w-14 h-14 rounded-xl bg-white/10 backdrop-blur-md text-white items-center justify-center hover:bg-white/20 transition-all duration-300 border border-white/10 hover:scale-110"
       >
         {isRTL ? <ChevronLeft className="h-7 w-7" /> : <ChevronRight className="h-7 w-7" />}
       </button>
 
       {/* Progress Indicator - Modern style */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-3">
+      <div className="absolute bottom-4 md:bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-2 md:gap-3">
         {items.map((_, index) => (
           <button
             key={index}
@@ -194,7 +194,7 @@ export default function HeroSlider({ items }: HeroSliderProps) {
       </div>
 
       {/* Slide counter */}
-      <div className="absolute bottom-10 end-6 px-4 py-2 rounded-lg bg-white/10 backdrop-blur-md text-white text-sm font-medium">
+      <div className="hidden md:block absolute bottom-10 end-6 px-4 py-2 rounded-lg bg-white/10 backdrop-blur-md text-white text-sm font-medium">
         {String(currentIndex + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}
       </div>
     </div>

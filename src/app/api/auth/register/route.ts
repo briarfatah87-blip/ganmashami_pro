@@ -40,27 +40,8 @@ export async function POST(request: Request) {
             },
         })
 
-        // Create JWT token and Session
-        const jwtToken = signToken({ userId: user.id, role: user.role })
-        const sessionToken = generateSessionToken()
-
-        await prisma.userSession.create({
-            data: {
-                userId: user.id,
-                token: sessionToken,
-                expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-            },
-        })
-
-        // Set HTTP-only cookie
-        const cookieStore = await cookies()
-        cookieStore.set('seven_stream_session', jwtToken, {
-            httpOnly: true,
-            secure: false, // Set to false to allow sessions over HTTP (IP access)
-            sameSite: 'lax',
-            maxAge: 7 * 24 * 60 * 60, // 7 days
-            path: '/',
-        })
+        // User will now log in manually upon redirection
+        // (Auto-login session code removed as per requested flow)
 
         // Return user without password
         const { password: _, ...userWithoutPassword } = user
