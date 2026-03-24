@@ -58,7 +58,7 @@ export default function HeroSlider({ items }: HeroSliderProps) {
   const href = isMovie ? `/movie/${currentItem.id}` : `/series/${currentItem.id}`
 
   return (
-    <div className="relative h-[65vh] md:h-[90vh] overflow-hidden">
+    <div className="relative h-[50vh] md:h-[90vh] overflow-hidden">
       {/* Background Image with transition */}
       <div className={`absolute inset-0 transition-all duration-700 ${isTransitioning ? 'scale-105 opacity-50' : 'scale-100 opacity-100'}`}>
         <Image
@@ -76,8 +76,8 @@ export default function HeroSlider({ items }: HeroSliderProps) {
       <div className="absolute inset-0 bg-gradient-to-b from-[var(--background)]/60 via-transparent to-transparent h-32" />
 
       {/* Content */}
-      <div className={`relative h-full container mx-auto px-4 flex items-end md:items-center pb-16 md:pb-0 transition-all duration-500 ${isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
-        <div className="max-w-2xl pt-20">
+      <div className={`relative h-full container mx-auto px-4 flex items-end pb-12 md:items-center md:pb-0 transition-all duration-500 ${isTransitioning ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
+        <div className="max-w-2xl">
           {/* Type Badge with glow */}
           <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-3 md:mb-6">
             <span 
@@ -100,8 +100,8 @@ export default function HeroSlider({ items }: HeroSliderProps) {
             {currentItem.title}
           </h1>
 
-          {/* Meta info */}
-          <div className="flex flex-wrap items-center gap-2 md:gap-4 text-gray-300 text-xs md:text-sm mb-2 md:mb-4">
+          {/* Meta info - hidden on mobile */}
+          <div className="hidden md:flex flex-wrap items-center gap-2 md:gap-4 text-gray-300 text-xs md:text-sm mb-2 md:mb-4">
             <span className="font-semibold text-white">{currentItem.releaseYear}</span>
             <span className="w-1 h-1 rounded-full bg-gray-500" />
             {isMovie && (currentItem as Movie).duration && (

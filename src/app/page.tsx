@@ -90,7 +90,7 @@ export default function Home() {
       {featuredItems.length > 0 && <HeroSlider items={featuredItems as Parameters<typeof HeroSlider>[0]['items']} />}
 
       {/* Content Sections */}
-      <div className="container mx-auto px-4 -mt-10 md:-mt-32 relative z-10 space-y-8 pb-16">
+      <div className="container mx-auto px-4 md:-mt-32 relative z-10 space-y-8 pb-16">
         {newMovies.length > 0 && (
           <ContentRow
             title={t('newMovies')}
