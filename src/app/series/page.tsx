@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect, useMemo } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Search, Filter, SlidersHorizontal, Tv, Loader2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -16,6 +17,7 @@ const ITEMS_PER_PAGE = 24
 
 export default function SeriesPage() {
   const { t } = useLanguage()
+  const searchParams = useSearchParams()
   const [seriesList, setSeriesList] = useState<MappedSeries[]>([])
   const [categories, setCategories] = useState<XtreamCategory[]>([])
   const [loading, setLoading] = useState(true)
@@ -24,6 +26,15 @@ export default function SeriesPage() {
   const [sortBy, setSortBy] = useState<string>('recent')
   const [showFilters, setShowFilters] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
+
+  // Read genre from URL query param
+  useEffect(() => {
+    const genreParam = searchParams.get('genre')
+    if (genreParam) {
+      setSelectedGenre(genreParam)
+      setShowFilters(true)
+    }
+  }, [searchParams])
 
   useEffect(() => {
     async function fetchData() {
@@ -55,7 +66,9 @@ export default function SeriesPage() {
     }
 
     if (selectedGenre && selectedGenre !== 'all') {
-      result = result.filter(series => series.genre.includes(selectedGenre))
+      result = result.filter(series =>
+        series.genre?.toLowerCase().includes(selectedGenre.toLowerCase())
+      )
     }
 
     switch (sortBy) {

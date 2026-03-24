@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect, useMemo } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Search, Filter, SlidersHorizontal, Film, Loader2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -16,6 +17,7 @@ const ITEMS_PER_PAGE = 24
 
 export default function MoviesPage() {
   const { t } = useLanguage()
+  const searchParams = useSearchParams()
   const [movies, setMovies] = useState<MappedMovie[]>([])
   const [categories, setCategories] = useState<XtreamCategory[]>([])
   const [loading, setLoading] = useState(true)
@@ -24,6 +26,15 @@ export default function MoviesPage() {
   const [sortBy, setSortBy] = useState<string>('recent')
   const [showFilters, setShowFilters] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
+
+  // Read genre from URL query param (e.g. /movies?genre=Action)
+  useEffect(() => {
+    const genreParam = searchParams.get('genre')
+    if (genreParam) {
+      setSelectedGenre(genreParam)
+      setShowFilters(true)
+    }
+  }, [searchParams])
 
   useEffect(() => {
     async function fetchData() {
@@ -55,7 +66,9 @@ export default function MoviesPage() {
     }
 
     if (selectedGenre && selectedGenre !== 'all') {
-      result = result.filter(movie => movie.genre === selectedGenre)
+      result = result.filter(movie =>
+        movie.genre?.toLowerCase().includes(selectedGenre.toLowerCase())
+      )
     }
 
     switch (sortBy) {
