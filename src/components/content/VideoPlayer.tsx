@@ -205,7 +205,7 @@ export default function VideoPlayer({
       {!isPlaying && !isBuffering && (
         <button
           onClick={(e) => { e.stopPropagation(); togglePlay(); }}
-          className="absolute inset-0 flex items-center justify-center bg-black/30"
+          className="absolute inset-0 hidden md:flex items-center justify-center bg-black/30"
         >
           <div className="w-14 h-14 md:w-20 md:h-20 rounded-full bg-red-600 flex items-center justify-center hover:bg-red-700 transition-colors">
             <Play className="h-6 w-6 md:h-10 md:w-10 text-white fill-white ml-0.5" />
