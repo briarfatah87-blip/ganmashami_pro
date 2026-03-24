@@ -28,7 +28,10 @@ export async function GET(request: NextRequest) {
             headers['Range'] = rangeHeader;
         }
 
-        const response = await fetch(streamUrl, { headers });
+        const response = await fetch(streamUrl, { 
+            headers,
+            signal: request.signal // Crucial: abort upstream fetch if client disconnects
+        });
 
         // Build response headers
         const responseHeaders = new Headers();
@@ -47,7 +50,12 @@ export async function GET(request: NextRequest) {
             status: response.status,
             headers: responseHeaders,
         });
-    } catch (error) {
+    } catch (error: any) {
+        if (error.name === 'AbortError' || error.message?.includes('aborted')) {
+            // Client closed the connection, gracefully abort without logging error
+            return new NextResponse(null, { status: 499 }); // Client Closed Request
+        }
+        
         console.error('Stream proxy error:', error);
         return NextResponse.json({ error: 'Failed to proxy stream' }, { status: 500 });
     }
