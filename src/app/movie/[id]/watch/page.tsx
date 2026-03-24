@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Loader2 } from 'lucide-react'
+import Image from 'next/image'
+import { ArrowLeft, Loader2, Star, Clock, Calendar, Tag } from 'lucide-react'
 import VideoPlayer from '@/components/content/VideoPlayer'
 import ContentCard from '@/components/content/ContentCard'
 import type { MappedMovie } from '@/lib/xtream-api'
@@ -22,11 +23,9 @@ export default function WatchMoviePage() {
         const found = movies.find(m => m.id === params.id)
         if (found) {
           setMovie(found)
-          // Find similar movies by genre
           const similar = movies
             .filter(m => m.id !== found.id && m.genre && found.genre && m.genre.split(',')[0]?.trim() === found.genre.split(',')[0]?.trim())
             .slice(0, 12)
-          // If not enough similar by genre, fill with others
           if (similar.length < 6) {
             const extras = movies.filter(m => m.id !== found.id && !similar.find(s => s.id === m.id)).slice(0, 12 - similar.length)
             similar.push(...extras)
@@ -59,25 +58,89 @@ export default function WatchMoviePage() {
   }
 
   return (
-    <div className="min-h-screen bg-black pt-16">
-      {/* Back button */}
-      <div className="container mx-auto px-4 py-4">
-        <Link
-          href={`/movie/${movie.id}`}
-          className="inline-flex items-center text-gray-400 hover:text-white transition-colors"
-        >
-          <ArrowLeft className="h-5 w-5 mr-2" />
-          Back to {movie.title}
-        </Link>
+    <div className="min-h-screen bg-[var(--background)]">
+      {/* Backdrop Hero */}
+      <div className="relative h-[35vh] md:h-[50vh] overflow-hidden">
+        <Image
+          src={movie.backdrop || movie.poster}
+          alt={movie.title}
+          fill
+          className="object-cover"
+          priority
+        />
+        {/* Gradient overlays */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--background)] via-[var(--background)]/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[var(--background)]/70 to-transparent h-24" />
+
+        {/* Back button on backdrop */}
+        <div className="absolute top-20 md:top-24 left-4 md:left-8 z-10">
+          <Link
+            href={`/movie/${movie.id}`}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-black/40 backdrop-blur-md text-white hover:bg-black/60 transition-all border border-white/10"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span className="text-sm">Back</span>
+          </Link>
+        </div>
+
+        {/* Movie title overlay on backdrop */}
+        <div className="absolute bottom-6 md:bottom-10 left-0 right-0 container mx-auto px-4 md:px-8">
+          <h1 className="text-2xl md:text-4xl font-bold text-white drop-shadow-2xl mb-2">
+            {movie.title}
+          </h1>
+          <div className="flex flex-wrap items-center gap-3 text-sm text-gray-300">
+            {movie.releaseYear > 0 && (
+              <span className="flex items-center gap-1.5">
+                <Calendar className="h-3.5 w-3.5" />
+                {movie.releaseYear}
+              </span>
+            )}
+            {movie.genre && (
+              <span className="flex items-center gap-1.5">
+                <Tag className="h-3.5 w-3.5" />
+                {movie.genre}
+              </span>
+            )}
+            {movie.rating > 0 && (
+              <span className="flex items-center gap-1.5">
+                <Star className="h-3.5 w-3.5 text-yellow-400 fill-yellow-400" />
+                {movie.rating.toFixed(1)}
+              </span>
+            )}
+            {movie.duration > 0 && (
+              <span className="flex items-center gap-1.5">
+                <Clock className="h-3.5 w-3.5" />
+                {Math.floor(movie.duration / 60)}h {movie.duration % 60}m
+              </span>
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* Video Player */}
-      <div className="container mx-auto px-4">
-        <VideoPlayer
-          streamUrl={movie.streamUrl}
-          title={movie.title}
-          onProgress={(progress, duration) => {
-            if (Math.floor(progress) % 10 === 0 && progress > 0) {
+      {/* Video Player - pulled up into the backdrop */}
+      <div className="container mx-auto px-4 md:px-8 -mt-2 relative z-10">
+        <div className="rounded-xl overflow-hidden shadow-2xl shadow-black/50 border border-white/5">
+          <VideoPlayer
+            streamUrl={movie.streamUrl}
+            title={movie.title}
+            onProgress={(progress, duration) => {
+              if (Math.floor(progress) % 10 === 0 && progress > 0) {
+                fetch('/api/profile/history', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    contentId: movie.id.replace('movie-', ''),
+                    contentType: 'movie',
+                    contentTitle: movie.title,
+                    contentPoster: movie.poster || movie.backdrop,
+                    progress: Math.floor(progress),
+                    duration: Math.floor(duration),
+                    completed: progress / duration > 0.95
+                  })
+                }).catch(err => console.error('Failed to update history', err))
+              }
+            }}
+            onEnded={() => {
               fetch('/api/profile/history', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -86,47 +149,29 @@ export default function WatchMoviePage() {
                   contentType: 'movie',
                   contentTitle: movie.title,
                   contentPoster: movie.poster || movie.backdrop,
-                  progress: Math.floor(progress),
-                  duration: Math.floor(duration),
-                  completed: progress / duration > 0.95
+                  progress: 100,
+                  duration: 100,
+                  completed: true
                 })
               }).catch(err => console.error('Failed to update history', err))
-            }
-          }}
-          onEnded={() => {
-            fetch('/api/profile/history', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                contentId: movie.id.replace('movie-', ''),
-                contentType: 'movie',
-                contentTitle: movie.title,
-                contentPoster: movie.poster || movie.backdrop,
-                progress: 100,
-                duration: 100,
-                completed: true
-              })
-            }).catch(err => console.error('Failed to update history', err))
-          }}
-        />
+            }}
+          />
+        </div>
       </div>
 
-      {/* Movie Info */}
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold text-white mb-2">{movie.title}</h1>
-        <p className="text-gray-400 mb-4">
-          {movie.releaseYear > 0 ? movie.releaseYear : ''}
-          {movie.genre ? ` • ${movie.genre}` : ''}
-          {movie.rating > 0 ? ` • ⭐ ${movie.rating.toFixed(1)}` : ''}
-        </p>
-        {movie.description && (
-          <p className="text-gray-300 max-w-3xl">{movie.description}</p>
-        )}
-      </div>
+      {/* Movie Description */}
+      {movie.description && (
+        <div className="container mx-auto px-4 md:px-8 py-6">
+          <div className="max-w-3xl">
+            <h3 className="text-lg font-semibold text-white mb-2">Synopsis</h3>
+            <p className="text-gray-400 leading-relaxed">{movie.description}</p>
+          </div>
+        </div>
+      )}
 
       {/* Similar Movies */}
       {similarMovies.length > 0 && (
-        <div className="container mx-auto px-4 pb-16">
+        <div className="container mx-auto px-4 md:px-8 py-6 pb-16">
           <h2 className="text-xl font-bold text-white mb-4">Similar Movies</h2>
           <div
             className="flex gap-4 overflow-x-auto pb-4"
