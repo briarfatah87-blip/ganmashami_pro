@@ -5,11 +5,13 @@ import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import VideoPlayer from '@/components/content/VideoPlayer'
+import ContentCard from '@/components/content/ContentCard'
 import type { MappedMovie } from '@/lib/xtream-api'
 
 export default function WatchMoviePage() {
   const params = useParams()
   const [movie, setMovie] = useState<MappedMovie | null>(null)
+  const [similarMovies, setSimilarMovies] = useState<MappedMovie[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -18,7 +20,19 @@ export default function WatchMoviePage() {
         const res = await fetch('/api/movies')
         const movies: MappedMovie[] = await res.json()
         const found = movies.find(m => m.id === params.id)
-        if (found) setMovie(found)
+        if (found) {
+          setMovie(found)
+          // Find similar movies by genre
+          const similar = movies
+            .filter(m => m.id !== found.id && m.genre && found.genre && m.genre.split(',')[0]?.trim() === found.genre.split(',')[0]?.trim())
+            .slice(0, 12)
+          // If not enough similar by genre, fill with others
+          if (similar.length < 6) {
+            const extras = movies.filter(m => m.id !== found.id && !similar.find(s => s.id === m.id)).slice(0, 12 - similar.length)
+            similar.push(...extras)
+          }
+          setSimilarMovies(similar)
+        }
       } catch (error) {
         console.error('Error:', error)
       } finally {
@@ -63,7 +77,6 @@ export default function WatchMoviePage() {
           streamUrl={movie.streamUrl}
           title={movie.title}
           onProgress={(progress, duration) => {
-            // Only update history every 10 seconds to avoid spamming the DB
             if (Math.floor(progress) % 10 === 0 && progress > 0) {
               fetch('/api/profile/history', {
                 method: 'POST',
@@ -90,7 +103,7 @@ export default function WatchMoviePage() {
                 contentTitle: movie.title,
                 contentPoster: movie.poster || movie.backdrop,
                 progress: 100,
-                duration: 100, // generic since we might not have exact here if it just ended
+                duration: 100,
                 completed: true
               })
             }).catch(err => console.error('Failed to update history', err))
@@ -110,6 +123,32 @@ export default function WatchMoviePage() {
           <p className="text-gray-300 max-w-3xl">{movie.description}</p>
         )}
       </div>
+
+      {/* Similar Movies */}
+      {similarMovies.length > 0 && (
+        <div className="container mx-auto px-4 pb-16">
+          <h2 className="text-xl font-bold text-white mb-4">Similar Movies</h2>
+          <div
+            className="flex gap-4 overflow-x-auto pb-4"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {similarMovies.map((m) => (
+              <ContentCard
+                key={m.id}
+                id={m.id}
+                title={m.title}
+                poster={m.poster}
+                releaseYear={m.releaseYear}
+                rating={m.rating}
+                genre={m.genre}
+                type="movie"
+                duration={m.duration}
+                className="w-[140px] md:w-[185px] flex-shrink-0"
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
