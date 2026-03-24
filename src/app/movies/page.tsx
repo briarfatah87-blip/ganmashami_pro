@@ -32,7 +32,6 @@ export default function MoviesPage() {
     const genreParam = searchParams.get('genre')
     if (genreParam) {
       setSelectedGenre(genreParam)
-      setShowFilters(true)
     }
   }, [searchParams])
 

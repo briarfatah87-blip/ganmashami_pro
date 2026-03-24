@@ -32,7 +32,6 @@ export default function SeriesPage() {
     const genreParam = searchParams.get('genre')
     if (genreParam) {
       setSelectedGenre(genreParam)
-      setShowFilters(true)
     }
   }, [searchParams])
 
