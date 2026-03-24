@@ -60,7 +60,7 @@ export default function WatchMoviePage() {
   return (
     <div className="min-h-screen bg-[var(--background)]">
       {/* Back button */}
-      <div className="container mx-auto px-4 md:px-8 pt-20 md:pt-24 pb-3">
+      <div className="container mx-auto px-4 md:px-8 pt-24 md:pt-28 pb-4">
         <Link
           href={`/movie/${movie.id}`}
           className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-sm"
