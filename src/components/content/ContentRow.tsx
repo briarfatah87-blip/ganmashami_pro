@@ -39,17 +39,17 @@ export default function ContentRow({ title, items, type, showViewAll = true }: C
       <div className="flex items-center justify-between mb-5 px-4 md:px-0">
         <div className="flex items-center gap-3">
           <div 
-            className="w-1 h-6 rounded-full"
+            className="w-1.5 h-7 rounded-full"
             style={{ backgroundColor: currentTheme.primary }}
           />
-          <h2 className="text-xl md:text-2xl font-bold text-white">
+          <h2 className="text-2xl md:text-3xl font-bold text-white">
             {title}
           </h2>
         </div>
         {showViewAll && (
           <Link 
             href={`/${type === 'movie' ? 'movies' : 'series'}`}
-            className="text-sm font-medium transition-colors hover:underline"
+            className="text-base font-medium transition-colors hover:underline"
             style={{ color: currentTheme.primary }}
           >
             {isRTL ? `← ${t('viewAll')}` : `${t('viewAll')} →`}
@@ -91,7 +91,7 @@ export default function ContentRow({ title, items, type, showViewAll = true }: C
               type={type}
               duration={type === 'movie' ? (item as Movie).duration : undefined}
               seasons={type === 'series' ? (item as Series).seasons?.length : undefined}
-              className="w-[150px] md:w-[185px] lg:w-[210px]"
+              className="w-[160px] md:w-[200px] lg:w-[230px]"
             />
           ))}
         </div>

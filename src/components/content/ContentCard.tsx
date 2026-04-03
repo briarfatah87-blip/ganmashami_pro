@@ -70,9 +70,9 @@ export default function ContentCard({
 
           {/* Content - slides up on hover */}
           <div className="absolute bottom-0 left-0 right-0 p-3 transform translate-y-2 group-hover/card:translate-y-0 transition-transform duration-300">
-            <h3 className="text-white font-bold text-sm line-clamp-2 mb-1 drop-shadow-lg">{title}</h3>
+            <h3 className="text-white font-bold text-base line-clamp-2 mb-1 drop-shadow-lg">{title}</h3>
 
-            <div className="flex items-center gap-2 text-xs text-gray-300 mb-2 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300">
+            <div className="flex items-center gap-2 text-sm text-gray-300 mb-2 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300">
               {releaseYear && <span className="font-medium">{releaseYear}</span>}
               {releaseYear && (rating || duration || seasons) && <span className="text-gray-500">•</span>}
               {rating && (
@@ -110,7 +110,7 @@ export default function ContentCard({
           {/* Rating badge */}
           {rating && (
             <div className="absolute top-2 right-2 opacity-100 group-hover/card:opacity-0 transition-opacity duration-300">
-              <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-black/60 backdrop-blur-sm text-white text-xs font-semibold">
+              <div className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-black/60 backdrop-blur-sm text-white text-sm font-semibold">
                 <Star className="h-3 w-3 text-yellow-400 fill-yellow-400" />
                 {rating.toFixed(1)}
               </div>
@@ -120,7 +120,7 @@ export default function ContentCard({
           {/* Genre badge */}
           {genre && (
             <div className="absolute top-2 left-2 opacity-100 group-hover/card:opacity-0 transition-opacity duration-300">
-              <div className="px-2 py-1 rounded-md bg-black/60 backdrop-blur-sm text-white text-xs font-medium">
+              <div className="px-2.5 py-1 rounded-md bg-black/60 backdrop-blur-sm text-white text-sm font-medium">
                 {genre}
               </div>
             </div>
@@ -130,8 +130,8 @@ export default function ContentCard({
 
       {/* Title below card (visible on mobile) */}
       <div className="mt-2 md:hidden">
-        <h3 className="text-white text-sm font-medium line-clamp-1">{title}</h3>
-        <div className="flex items-center gap-2 text-xs text-gray-400">
+        <h3 className="text-white text-base font-medium line-clamp-1">{title}</h3>
+        <div className="flex items-center gap-2 text-sm text-gray-400">
           {releaseYear && <span>{releaseYear}</span>}
           {rating && (
             <span className="flex items-center gap-1">

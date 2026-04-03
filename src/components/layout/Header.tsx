@@ -153,7 +153,7 @@ export default function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-[var(--background)]/80 backdrop-blur-xl border-b border-white/5">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-20 md:h-24">
+        <div className="flex items-center justify-between h-24 md:h-28">
           {/* Logo */}
           <Link href="/" className="flex items-center">
             <Image
@@ -172,7 +172,7 @@ export default function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-gray-300 hover:text-white transition-colors text-sm font-medium"
+                className="text-gray-300 hover:text-white transition-colors text-lg font-medium"
               >
                 {item.label}
               </Link>
@@ -291,9 +291,9 @@ export default function Header() {
                     )}
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-80 max-h-[400px] overflow-y-auto">
+                <DropdownMenuContent align="end" className="w-96 max-h-[500px] overflow-y-auto">
                   <div className="flex items-center justify-between px-4 py-2 border-b border-gray-800">
-                    <span className="font-semibold text-white">{t('notificationsTitle')}</span>
+                    <span className="font-semibold text-white text-lg">{t('notificationsTitle')}</span>
                     {unreadCount > 0 && (
                       <button onClick={handleMarkAllAsRead} className="text-xs text-gray-400 hover:text-white transition-colors">
                         {t('markAllRead')}
@@ -341,40 +341,40 @@ export default function Header() {
                     </Avatar>
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuItem asChild>
-                    <Link href="/profile" className="flex items-center">
-                      <User className="me-2 h-4 w-4" />
+                    <Link href="/profile" className="flex items-center text-base">
+                      <User className="me-2 h-5 w-5" />
                       {t('profile')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/profile?tab=favorites" className="flex items-center">
-                      <Heart className="me-2 h-4 w-4" />
+                    <Link href="/profile?tab=favorites" className="flex items-center text-base">
+                      <Heart className="me-2 h-5 w-5" />
                       {t('favorites')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/profile?tab=watchlater" className="flex items-center">
-                      <Clock className="me-2 h-4 w-4" />
+                    <Link href="/profile?tab=watchlater" className="flex items-center text-base">
+                      <Clock className="me-2 h-5 w-5" />
                       {t('watchLater')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/profile?tab=history" className="flex items-center">
-                      <History className="me-2 h-4 w-4" />
+                    <Link href="/profile?tab=history" className="flex items-center text-base">
+                      <History className="me-2 h-5 w-5" />
                       {t('watchHistory')}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/settings" className="flex items-center">
-                      <Settings className="me-2 h-4 w-4" />
+                    <Link href="/settings" className="flex items-center text-base">
+                      <Settings className="me-2 h-5 w-5" />
                       {t('settings')}
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="text-red-500 focus:text-red-500 cursor-pointer" onClick={() => logout()}>
-                    <LogOut className="me-2 h-4 w-4" />
+                  <DropdownMenuItem className="text-red-500 focus:text-red-500 cursor-pointer text-base" onClick={() => logout()}>
+                    <LogOut className="me-2 h-5 w-5" />
                     {t('logout')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -408,7 +408,7 @@ export default function Header() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-gray-300 hover:text-white transition-colors py-2"
+                  className="text-gray-300 hover:text-white transition-colors py-2 text-lg"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.label}
@@ -419,13 +419,13 @@ export default function Header() {
                   <hr className="border-gray-700" />
                   <Link
                     href="/login"
-                    className="text-gray-300 hover:text-white transition-colors py-2"
+                    className="text-gray-300 hover:text-white transition-colors py-2 text-lg"
                   >
                     {t('login')}
                   </Link>
                   <Link
                     href="/signup"
-                    className="text-red-600 hover:text-red-500 transition-colors py-2"
+                    className="text-red-600 hover:text-red-500 transition-colors py-2 text-lg"
                   >
                     {t('signup')}
                   </Link>

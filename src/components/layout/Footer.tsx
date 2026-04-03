@@ -28,7 +28,7 @@ export default function Footer() {
                 className="h-[85px] w-auto object-contain"
               />
             </Link>
-            <p className="text-gray-400 text-sm mb-6 leading-relaxed max-w-sm">
+            <p className="text-gray-400 text-base mb-6 leading-relaxed max-w-sm">
               {settings.footerDescription}
             </p>
             <div className="flex space-x-3">
@@ -57,30 +57,30 @@ export default function Footer() {
 
           {/* Browse */}
           <div>
-            <h4 className="text-white font-semibold mb-5 text-sm uppercase tracking-wider">{t('browse')}</h4>
+            <h4 className="text-white font-semibold mb-5 text-base uppercase tracking-wider">{t('browse')}</h4>
             <ul className="space-y-3">
               <li>
-                <Link href="/movies" className="text-gray-400 hover:text-white text-sm transition-colors hover:translate-x-1 inline-block">
+                <Link href="/movies" className="text-gray-400 hover:text-white text-base transition-colors hover:translate-x-1 inline-block">
                   {t('movies')}
                 </Link>
               </li>
               <li>
-                <Link href="/series" className="text-gray-400 hover:text-white text-sm transition-colors hover:translate-x-1 inline-block">
+                <Link href="/series" className="text-gray-400 hover:text-white text-base transition-colors hover:translate-x-1 inline-block">
                   {t('series')}
                 </Link>
               </li>
               <li>
-                <Link href="/movies?genre=action" className="text-gray-400 hover:text-white text-sm transition-colors hover:translate-x-1 inline-block">
+                <Link href="/movies?genre=action" className="text-gray-400 hover:text-white text-base transition-colors hover:translate-x-1 inline-block">
                   {t('action')}
                 </Link>
               </li>
               <li>
-                <Link href="/movies?genre=drama" className="text-gray-400 hover:text-white text-sm transition-colors hover:translate-x-1 inline-block">
+                <Link href="/movies?genre=drama" className="text-gray-400 hover:text-white text-base transition-colors hover:translate-x-1 inline-block">
                   {t('drama')}
                 </Link>
               </li>
               <li>
-                <Link href="/movies?genre=comedy" className="text-gray-400 hover:text-white text-sm transition-colors hover:translate-x-1 inline-block">
+                <Link href="/movies?genre=comedy" className="text-gray-400 hover:text-white text-base transition-colors hover:translate-x-1 inline-block">
                   {t('comedy')}
                 </Link>
               </li>
@@ -89,25 +89,25 @@ export default function Footer() {
 
           {/* Help */}
           <div>
-            <h4 className="text-white font-semibold mb-5 text-sm uppercase tracking-wider">{t('help')}</h4>
+            <h4 className="text-white font-semibold mb-5 text-base uppercase tracking-wider">{t('help')}</h4>
             <ul className="space-y-3">
               <li>
-                <Link href="/faq" className="text-gray-400 hover:text-white text-sm transition-colors hover:translate-x-1 inline-block">
+                <Link href="/faq" className="text-gray-400 hover:text-white text-base transition-colors hover:translate-x-1 inline-block">
                   {t('faq')}
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-gray-400 hover:text-white text-sm transition-colors hover:translate-x-1 inline-block">
+                <Link href="/contact" className="text-gray-400 hover:text-white text-base transition-colors hover:translate-x-1 inline-block">
                   {t('contactUs')}
                 </Link>
               </li>
               <li>
-                <Link href="/help" className="text-gray-400 hover:text-white text-sm transition-colors hover:translate-x-1 inline-block">
+                <Link href="/help" className="text-gray-400 hover:text-white text-base transition-colors hover:translate-x-1 inline-block">
                   {t('helpCenter')}
                 </Link>
               </li>
               <li>
-                <Link href="/devices" className="text-gray-400 hover:text-white text-sm transition-colors hover:translate-x-1 inline-block">
+                <Link href="/devices" className="text-gray-400 hover:text-white text-base transition-colors hover:translate-x-1 inline-block">
                   {t('supportedDevices')}
                 </Link>
               </li>
@@ -116,20 +116,20 @@ export default function Footer() {
 
           {/* Legal */}
           <div>
-            <h4 className="text-white font-semibold mb-5 text-sm uppercase tracking-wider">{t('legal')}</h4>
+            <h4 className="text-white font-semibold mb-5 text-base uppercase tracking-wider">{t('legal')}</h4>
             <ul className="space-y-3">
               <li>
-                <Link href="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors hover:translate-x-1 inline-block">
+                <Link href="/privacy" className="text-gray-400 hover:text-white text-base transition-colors hover:translate-x-1 inline-block">
                   {t('privacyPolicy')}
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="text-gray-400 hover:text-white text-sm transition-colors hover:translate-x-1 inline-block">
+                <Link href="/terms" className="text-gray-400 hover:text-white text-base transition-colors hover:translate-x-1 inline-block">
                   {t('termsOfService')}
                 </Link>
               </li>
               <li>
-                <Link href="/cookies" className="text-gray-400 hover:text-white text-sm transition-colors hover:translate-x-1 inline-block">
+                <Link href="/cookies" className="text-gray-400 hover:text-white text-base transition-colors hover:translate-x-1 inline-block">
                   {t('cookiePolicy')}
                 </Link>
               </li>
@@ -139,10 +139,10 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="border-t border-white/5 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-gray-500 text-sm">
+          <p className="text-gray-500 text-base">
             © {new Date().getFullYear()} {settings.copyrightText}. {t('allRightsReserved')}
           </p>
-          <div className="flex items-center gap-6 text-sm text-gray-500">
+          <div className="flex items-center gap-6 text-base text-gray-500">
             <span className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
               {t('allSystemsOperational')}
