@@ -46,6 +46,9 @@ export default function SettingsPage() {
 
   const [isSaving, setIsSaving] = useState(false)
   const [saveMessage, setSaveMessage] = useState('')
+  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false)
+  const [passwordMessage, setPasswordMessage] = useState('')
+  const [passwordMessageType, setPasswordMessageType] = useState<'success' | 'error'>('success')
 
   useEffect(() => {
     if (!authLoading && !user) router.push('/login')
@@ -111,6 +114,60 @@ export default function SettingsPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...settings, language: lang })
     })
+  }
+
+  const handleUpdatePassword = async () => {
+    setPasswordMessage('')
+
+    if (!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
+      setPasswordMessageType('error')
+      setPasswordMessage('Please fill in all password fields.')
+      return
+    }
+
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setPasswordMessageType('error')
+      setPasswordMessage(t('passwordsDoNotMatch'))
+      return
+    }
+
+    if (passwordData.newPassword.length < 6) {
+      setPasswordMessageType('error')
+      setPasswordMessage(t('passwordTooShort'))
+      return
+    }
+
+    setIsUpdatingPassword(true)
+
+    try {
+      const res = await fetch('/api/settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword
+        })
+      })
+      const data = await res.json()
+
+      if (res.ok) {
+        setPasswordData({
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: ''
+        })
+        setPasswordMessageType('success')
+        setPasswordMessage(data.message || 'Password updated successfully.')
+      } else {
+        setPasswordMessageType('error')
+        setPasswordMessage(data.error || 'Failed to update password.')
+      }
+    } catch {
+      setPasswordMessageType('error')
+      setPasswordMessage('Failed to update password. Please try again.')
+    } finally {
+      setIsUpdatingPassword(false)
+    }
   }
 
   if (authLoading || !user) return null
@@ -291,7 +348,14 @@ export default function SettingsPage() {
                     onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
                   />
                 </div>
-                <Button>{t('updatePassword')}</Button>
+                <Button onClick={handleUpdatePassword} disabled={isUpdatingPassword}>
+                  {isUpdatingPassword ? t('saving') : t('updatePassword')}
+                </Button>
+                {passwordMessage && (
+                  <p className={`text-sm mt-2 ${passwordMessageType === 'success' ? 'text-green-500' : 'text-red-500'}`}>
+                    {passwordMessage}
+                  </p>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
