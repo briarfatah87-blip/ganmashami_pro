@@ -193,34 +193,6 @@ function ProfileContent() {
               />
             </div>
 
-            {/* User Info */}
-            <div className="flex-1 text-center md:text-start">
-              <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mb-2">
-                <h1 className="text-2xl md:text-3xl font-bold text-white">{displayUser.username}</h1>
-                <Badge variant="secondary">{t('memberSince')} {new Date(displayUser.joinDate).getFullYear()}</Badge>
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" asChild>
-                <Link href="/settings">
-                  <Settings className="h-4 w-4 me-2" />
-                  {t('settings')}
-                </Link>
-              </Button>
-              {displayUser.role === 'admin' && (
-                <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white" asChild>
-                  <Link href="/admin">
-                    admin
-                  </Link>
-                </Button>
-              )}
-              <Button size="sm">
-                <Edit className="h-4 w-4 me-2" />
-                {t('editProfile')}
-              </Button>
-
             {/* User Info + Actions */}
             <div className="flex-1 text-center md:text-start">
               <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mb-2">
