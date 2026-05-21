@@ -14,14 +14,33 @@ import {
     AlertCircle,
     Star,
     Image as ImageIcon,
-    Settings
+    Settings,
+    Activity,
+    PlayCircle,
+    User,
+    Clock
 } from 'lucide-react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useAuth } from '@/lib/auth-context'
+
+function timeAgo(dateStr: string) {
+    const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000)
+    if (diff < 60) return `${diff}s ago`
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`
+    return `${Math.floor(diff / 3600)}h ago`
+}
+
+function formatTime(seconds: number) {
+    const minutes = Math.floor(seconds / 60)
+    const hours = Math.floor(minutes / 60)
+    if (hours > 0) return `${hours}h ${minutes % 60}m`
+    return `${minutes}m`
+}
 
 export default function AdminDashboard() {
     const router = useRouter()
@@ -32,6 +51,8 @@ export default function AdminDashboard() {
     const [reports, setReports] = useState<any[]>([])
     const [reviews, setReviews] = useState<any[]>([])
     const [ads, setAds] = useState<any[]>([])
+    const [liveActivity, setLiveActivity] = useState<any[]>([])
+    const [lastLiveRefresh, setLastLiveRefresh] = useState<Date>(new Date())
     const [isLoading, setIsLoading] = useState(true)
 
     // Site settings state
@@ -100,6 +121,27 @@ export default function AdminDashboard() {
             setIsLoading(false)
         }
     }
+
+    const fetchLiveActivity = async () => {
+        try {
+            const res = await fetch('/api/admin/live-watching')
+            if (res.ok) {
+                setLiveActivity(await res.json())
+                setLastLiveRefresh(new Date())
+            }
+        } catch (e) {
+            console.error('Error fetching live watching activity:', e)
+        }
+    }
+
+    useEffect(() => {
+        if (user?.role !== 'admin') return
+
+        fetchLiveActivity()
+        const interval = setInterval(fetchLiveActivity, 15000)
+
+        return () => clearInterval(interval)
+    }, [user])
 
     const handleResolveReport = async (reportId: string) => {
         try {
@@ -278,6 +320,10 @@ export default function AdminDashboard() {
                         <TabsTrigger value="site-settings" className="gap-2 px-6 py-3">
                             <Settings className="h-4 w-4" />
                             Site Settings
+                        </TabsTrigger>
+                        <TabsTrigger value="live-watching" className="gap-2 px-6 py-3">
+                            <Activity className="h-4 w-4" />
+                            Live Watching
                         </TabsTrigger>
                     </TabsList>
 
@@ -652,6 +698,132 @@ export default function AdminDashboard() {
                                     {settingsSaved && <p className="text-center text-green-500 text-sm mt-3">✓ Settings saved successfully! Refresh the page to see changes.</p>}
                                 </div>
                             </form>
+                        </div>
+                    </TabsContent>
+                    {/* Live Watching Tab */}
+                    <TabsContent value="live-watching">
+                        <div className="bg-gray-900 rounded-xl p-6 border border-gray-800">
+                            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                                <div>
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <Activity className="h-6 w-6 text-green-500" />
+                                        <h2 className="text-xl font-bold text-white">Live Watching</h2>
+                                    </div>
+                                    <p className="text-sm text-gray-400">
+                                        {liveActivity.length} users actively watching right now
+                                    </p>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-2 text-sm text-gray-400">
+                                        <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
+                                        Last updated {timeAgo(lastLiveRefresh.toISOString())}
+                                    </div>
+                                    <Button
+                                        type="button"
+                                        size="sm"
+                                        variant="outline"
+                                        className="border-gray-700 text-white hover:bg-gray-800"
+                                        onClick={fetchLiveActivity}
+                                    >
+                                        Refresh
+                                    </Button>
+                                </div>
+                            </div>
+
+                            {liveActivity.length > 0 ? (
+                                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                                    {liveActivity.map((activity: any) => {
+                                        const progress = activity.content.duration > 0
+                                            ? Math.min(100, Math.round((activity.content.progress / activity.content.duration) * 100))
+                                            : 0
+
+                                        return (
+                                            <div
+                                                key={activity.id}
+                                                className="flex gap-4 bg-gray-950 p-4 rounded-lg border border-gray-800 hover:border-green-500/40 transition-colors"
+                                            >
+                                                <div className="w-16 h-24 flex-shrink-0 rounded-md overflow-hidden bg-gray-900 border border-gray-800">
+                                                    {activity.content.poster ? (
+                                                        <img
+                                                            src={activity.content.poster}
+                                                            alt={activity.content.title}
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center">
+                                                            <PlayCircle className="w-7 h-7 text-gray-600" />
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <Badge variant="outline" className="bg-red-600/20 text-red-400 border-red-500/40 text-[10px] px-1.5 py-0 font-semibold uppercase animate-pulse">
+                                                            LIVE
+                                                        </Badge>
+                                                        <span className="text-xs text-gray-500 capitalize">{activity.content.type}</span>
+                                                    </div>
+
+                                                    <h3 className="text-sm font-semibold text-white truncate mb-1" title={activity.content.title}>
+                                                        {activity.content.title}
+                                                    </h3>
+
+                                                    {activity.content.seasonNumber && activity.content.episodeNumber && (
+                                                        <p className="text-xs text-gray-500 mb-2">
+                                                            S{activity.content.seasonNumber} E{activity.content.episodeNumber}
+                                                        </p>
+                                                    )}
+
+                                                    {activity.content.duration > 0 && (
+                                                        <div className="mb-3">
+                                                            <div className="w-full bg-gray-800 h-1.5 rounded-full overflow-hidden">
+                                                                <div
+                                                                    className="bg-green-500 h-full rounded-full"
+                                                                    style={{ width: `${progress}%` }}
+                                                                />
+                                                            </div>
+                                                            <div className="flex justify-between text-[10px] text-gray-500 mt-1">
+                                                                <span>{formatTime(activity.content.progress)}</span>
+                                                                <span>{formatTime(activity.content.duration)}</span>
+                                                            </div>
+                                                        </div>
+                                                    )}
+
+                                                    <div className="flex items-center justify-between gap-3">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => router.push(`/profile/${activity.user.id}`)}
+                                                            className="flex items-center gap-2 min-w-0 hover:opacity-80 transition-opacity"
+                                                        >
+                                                            <Avatar className="w-6 h-6 border border-gray-700">
+                                                                <AvatarImage src={activity.user.avatar} />
+                                                                <AvatarFallback className="bg-gray-700 text-[10px]">
+                                                                    <User className="h-3 w-3" />
+                                                                </AvatarFallback>
+                                                            </Avatar>
+                                                            <span className="text-xs text-[var(--theme-primary)] font-medium truncate hover:underline">
+                                                                {activity.user.username}
+                                                            </span>
+                                                        </button>
+                                                        <span className="text-[10px] text-gray-500 flex items-center gap-1 flex-shrink-0">
+                                                            <Clock className="w-3 h-3" />
+                                                            {timeAgo(activity.content.updatedAt)}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            ) : (
+                                <div className="text-center py-16 bg-gray-950 rounded-lg border border-gray-800">
+                                    <PlayCircle className="h-16 w-16 text-gray-600 mx-auto mb-4" />
+                                    <h3 className="text-xl font-bold text-white mb-2">No active viewers</h3>
+                                    <p className="text-gray-400 max-w-md mx-auto">
+                                        No users have watched anything in the last 30 seconds. Activity will appear here as soon as someone starts streaming.
+                                    </p>
+                                </div>
+                            )}
                         </div>
                     </TabsContent>
                 </Tabs>

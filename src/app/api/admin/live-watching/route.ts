@@ -12,7 +12,7 @@ export async function GET(request: Request) {
     const token = cookieStore.get('seven_stream_session')?.value
     const decoded = token ? verifyToken(token) : null
 
-    if (!decoded) {
+    if (!decoded || decoded.role !== 'admin') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
