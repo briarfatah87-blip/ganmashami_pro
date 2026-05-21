@@ -149,6 +149,7 @@ function ProfileContent() {
     email: user.email,
     avatar: user.avatar || '',
     joinDate: (user as any).createdAt || new Date().toISOString(),
+    role: user.role,
     stats: {
       favorites: favorites.length,
       watchLater: watchLater.length,
@@ -166,7 +167,7 @@ function ProfileContent() {
           <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
             {/* Avatar */}
             <div className="relative group cursor-pointer" onClick={handleAvatarClick}>
-              <Avatar className={`h-28 w-28 md:h-32 md:w-32 transition-opacity ${isUploadingAvatar ? 'opacity-50' : ''}`}>
+              <Avatar className={`h-28 w-28 md:h-32 md:w-32 transition-opacity ${isUploadingAvatar ? 'opacity-50' : ''}`}> 
                 <AvatarImage src={displayUser.avatar} />
                 <AvatarFallback className="bg-[var(--theme-primary)] text-white text-3xl">
                   {displayUser.username.charAt(0).toUpperCase()}
@@ -197,6 +198,9 @@ function ProfileContent() {
               <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 mb-2">
                 <h1 className="text-2xl md:text-3xl font-bold text-white">{displayUser.username}</h1>
                 <Badge variant="secondary">{t('memberSince')} {new Date(displayUser.joinDate).getFullYear()}</Badge>
+                {displayUser.role === 'admin' && (
+                  <span className="ml-2 px-2 py-1 bg-red-600 text-white rounded text-xs font-semibold" style={{ verticalAlign: 'middle' }}>admin</span>
+                )}
               </div>
               <p className="text-gray-400 mb-4">{displayUser.email}</p>
 
