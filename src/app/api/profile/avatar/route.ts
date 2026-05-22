@@ -22,6 +22,14 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'No file uploaded' }, { status: 400 })
         }
 
+        if (!file.type.startsWith('image/')) {
+            return NextResponse.json({ error: 'Please upload an image file' }, { status: 400 })
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            return NextResponse.json({ error: 'Avatar image must be smaller than 5MB' }, { status: 400 })
+        }
+
         const bytes = await file.arrayBuffer()
         const buffer = Buffer.from(bytes)
 
@@ -42,7 +50,10 @@ export async function POST(request: Request) {
             data: { avatar: avatarUrl }
         })
 
-        return NextResponse.json({ avatar: avatarUrl }, { status: 200 })
+        return NextResponse.json({
+            avatar: avatarUrl,
+            message: 'Profile image updated successfully'
+        }, { status: 200 })
     } catch (error) {
         console.error('Avatar upload error:', error)
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

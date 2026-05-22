@@ -11,7 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import ContentCard from '@/components/content/ContentCard'
 import { sampleMovies, sampleSeries } from '@/lib/sample-data'
-import { useAuth, User as AuthUser } from '@/lib/auth-context'
+import { useAuth } from '@/lib/auth-context'
 import { useLanguage } from '@/lib/language-context'
 
 function ProfileContent() {
@@ -19,7 +19,7 @@ function ProfileContent() {
   const router = useRouter()
   const initialTab = searchParams.get('tab') || 'overview'
   const { t } = useLanguage()
-  const { user, isLoading: authLoading } = useAuth()
+  const { user, isLoading: authLoading, setUser } = useAuth()
 
   const [favorites, setFavorites] = useState<any[]>([])
   const [watchLater, setWatchLater] = useState<any[]>([])
@@ -28,6 +28,8 @@ function ProfileContent() {
   const [userReports, setUserReports] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false)
+  const [avatarMessage, setAvatarMessage] = useState('')
+  const [avatarMessageType, setAvatarMessageType] = useState<'success' | 'error'>('success')
 
   const handleAvatarClick = () => {
     document.getElementById('avatar-upload')?.click();
@@ -38,6 +40,7 @@ function ProfileContent() {
     if (!file) return;
 
     setIsUploadingAvatar(true);
+    setAvatarMessage('');
 
     try {
       // Convert to small webp using Canvas
@@ -91,16 +94,23 @@ function ProfileContent() {
         method: 'POST',
         body: formData
       });
+      const data = await res.json();
 
       if (res.ok) {
-        window.location.reload();
+        if (user) setUser({ ...user, avatar: data.avatar });
+        setAvatarMessageType('success');
+        setAvatarMessage(data.message || 'Profile image updated successfully.');
       } else {
-        console.error('Upload failed');
+        setAvatarMessageType('error');
+        setAvatarMessage(data.error || 'Upload failed. Please try again.');
       }
     } catch (error) {
       console.error('Error uploading avatar:', error);
+      setAvatarMessageType('error');
+      setAvatarMessage('Upload failed. Please try another image.');
     } finally {
       setIsUploadingAvatar(false);
+      e.target.value = '';
     }
   };
 
@@ -191,6 +201,11 @@ function ProfileContent() {
                 onChange={handleAvatarChange}
                 disabled={isUploadingAvatar}
               />
+              {avatarMessage && (
+                <p className={`absolute top-full mt-3 left-1/2 -translate-x-1/2 w-56 text-center text-xs ${avatarMessageType === 'success' ? 'text-green-500' : 'text-red-500'}`}>
+                  {avatarMessage}
+                </p>
+              )}
             </div>
 
             {/* User Info + Actions */}
