@@ -533,12 +533,11 @@ export default function AdminDashboard() {
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                             {/* Form */}
                             <div className="bg-gray-900 rounded-xl p-6 border border-gray-800">
-                                <h2 className="text-xl font-bold text-white mb-6">Create / Edit Popup Ad</h2>
+                                <h2 className="text-xl font-bold text-white mb-6">Create / Edit Advertisement</h2>
                                 <form onSubmit={handleSaveAd} className="space-y-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-300 mb-1">Photo URL <span className="text-red-500">*</span></label>
+                                        <label className="block text-sm font-medium text-gray-300 mb-1">Photo URL <span className="text-gray-500 font-normal text-xs ml-2">(Optional if Video URL is set)</span></label>
                                         <Input
-                                            required
                                             value={adForm.imageUrl}
                                             onChange={e => setAdForm({ ...adForm, imageUrl: e.target.value })}
                                             placeholder="https://example.com/image.jpg"

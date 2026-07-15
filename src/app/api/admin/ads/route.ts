@@ -41,15 +41,16 @@ export async function POST(request: Request) {
         const body = await request.json()
         const { id, imageUrl, link, showCountPerDay, isActive, videoUrl, showAfterSeconds, skipAfterSeconds } = body
 
-        if (!imageUrl) {
-            return NextResponse.json({ error: 'Image URL is required' }, { status: 400 })
+        // Require at least one: imageUrl OR videoUrl
+        if (!imageUrl && !videoUrl) {
+            return NextResponse.json({ error: 'Either Photo URL or Video Ad URL is required' }, { status: 400 })
         }
 
         const data = {
-            imageUrl,
-            link,
-            showCountPerDay: parseInt(showCountPerDay),
-            isActive,
+            imageUrl: imageUrl || null,
+            link: link || null,
+            showCountPerDay: parseInt(showCountPerDay) || 1,
+            isActive: isActive ?? true,
             videoUrl: videoUrl || null,
             showAfterSeconds: parseInt(showAfterSeconds ?? 0) || 0,
             skipAfterSeconds: parseInt(skipAfterSeconds ?? 5) || 5,

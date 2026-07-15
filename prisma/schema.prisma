@@ -252,7 +252,7 @@ model Report {
 
 model Advertisement {
   id               String   @id @default(uuid())
-  imageUrl         String
+  imageUrl         String?              // Optional — used for popup image ad
   link             String?
   showCountPerDay  Int      @default(1)  // 0 for every time, 1 for once, 2 for twice
   isActive         Boolean  @default(true)
