@@ -141,6 +141,30 @@ model WatchHistory {
 }
 
 // =====================================================
+// 6.5 GUEST LIVE ACTIVITY (for users without accounts)
+// =====================================================
+model GuestActivity {
+  id            String   @id @default(uuid())
+  ipAddress     String?
+  contentId     String
+  contentType   String       // "movie" or "series"
+  contentTitle  String?
+  contentPoster String?
+  episodeId     String?      // For series
+  seasonNumber  Int?
+  episodeNumber Int?
+  progress      Int      @default(0)
+  duration      Int      @default(0)
+  completed     Boolean  @default(false)
+  updatedAt     DateTime @updatedAt
+
+  // Composite unique constraint might require fields to be non-nullable if we use it, 
+  // but we can just findFirst using IP + content details. No unique constraint needed.
+  @@index([updatedAt])
+  @@map("guest_activity")
+}
+
+// =====================================================
 // 7. EPISODE PROGRESS (per-episode watched status)
 // =====================================================
 model EpisodeProgress {

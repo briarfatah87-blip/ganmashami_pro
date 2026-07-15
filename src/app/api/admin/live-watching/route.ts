@@ -64,7 +64,44 @@ export async function GET(request: Request) {
       }
     }))
 
-    return NextResponse.json(liveActivity)
+
+    const recentGuests = await prisma.guestActivity.findMany({
+      where: {
+        updatedAt: { gte: thirtySecondsAgo },
+        completed: false,
+      },
+      orderBy: { updatedAt: 'desc' },
+      take: 50,
+    })
+
+    const liveGuests = recentGuests.map((guest: any) => ({
+      id: guest.id,
+      user: {
+        id: `guest-${guest.id}`,
+        username: 'Guest',
+        avatar: null,
+        isGuest: true,
+        ip: guest.ipAddress
+      },
+      content: {
+        id: guest.contentId,
+        type: guest.contentType,
+        title: guest.contentTitle || 'Unknown Title',
+        poster: guest.contentPoster || '',
+        progress: guest.progress,
+        duration: guest.duration,
+        seasonNumber: guest.seasonNumber,
+        episodeNumber: guest.episodeNumber,
+        updatedAt: guest.updatedAt
+      }
+    }))
+
+    const combinedActivity = [...liveActivity, ...liveGuests]
+      .sort((a, b) => new Date(b.content.updatedAt).getTime() - new Date(a.content.updatedAt).getTime())
+      .slice(0, 50)
+
+    return NextResponse.json(combinedActivity)
+
 
   } catch (error) {
     console.error('Failed to fetch live watching activity:', error)
