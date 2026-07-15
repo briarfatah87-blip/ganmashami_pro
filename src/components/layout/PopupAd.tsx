@@ -16,7 +16,7 @@ export default function PopupAd() {
                 const res = await fetch('/api/ads')
                 if (res.ok) {
                     const data = await res.json()
-                    if (data && data.isActive) {
+                    if (data && data.isActive && data.imageUrl) {
                         checkFrequency(data)
                     }
                 }
