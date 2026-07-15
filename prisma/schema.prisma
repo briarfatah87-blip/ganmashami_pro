@@ -251,13 +251,17 @@ model Report {
 }
 
 model Advertisement {
-  id              String   @id @default(uuid())
-  imageUrl        String
-  link            String?
-  showCountPerDay Int      @default(1) // 0 for every time, 1 for once, 2 for twice
-  isActive        Boolean  @default(true)
-  updatedAt       DateTime @updatedAt
-  createdAt       DateTime @default(now())
+  id               String   @id @default(uuid())
+  imageUrl         String
+  link             String?
+  showCountPerDay  Int      @default(1)  // 0 for every time, 1 for once, 2 for twice
+  isActive         Boolean  @default(true)
+  // Video Ad fields
+  videoUrl         String?              // URL of the video ad (mp4 / stream)
+  showAfterSeconds Int      @default(0) // Trigger ad after this many seconds into main video (0 = on play)
+  skipAfterSeconds Int      @default(5) // Show Skip button after this many seconds
+  updatedAt        DateTime @updatedAt
+  createdAt        DateTime @default(now())
 
   @@map("advertisements")
 }

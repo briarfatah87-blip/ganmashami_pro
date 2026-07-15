@@ -220,7 +220,10 @@ export default function AdminDashboard() {
         imageUrl: '',
         link: '',
         showCountPerDay: '1',
-        isActive: true
+        isActive: true,
+        videoUrl: '',
+        showAfterSeconds: '0',
+        skipAfterSeconds: '5',
     })
     const [isSavingAd, setIsSavingAd] = useState(false)
 
@@ -235,7 +238,7 @@ export default function AdminDashboard() {
             })
             if (res.ok) {
                 alert('Advertisement saved successfully')
-                setAdForm({ id: '', imageUrl: '', link: '', showCountPerDay: '1', isActive: true })
+                setAdForm({ id: '', imageUrl: '', link: '', showCountPerDay: '1', isActive: true, videoUrl: '', showAfterSeconds: '0', skipAfterSeconds: '5' })
                 fetchData()
             }
         } catch (e) {
@@ -563,6 +566,50 @@ export default function AdminDashboard() {
                                             <option value="2">2 times per day</option>
                                         </select>
                                     </div>
+                                    {/* Video Ad URL */}
+                                    <div className="border-t border-gray-800 pt-4">
+                                        <h3 className="text-sm font-semibold text-gray-300 mb-3 flex items-center gap-2">
+                                            <PlayCircle className="h-4 w-4 text-[var(--theme-primary)]" />
+                                            Video Ad Settings
+                                        </h3>
+                                        <div className="space-y-3">
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-300 mb-1">Video Ad URL (mp4)</label>
+                                                <Input
+                                                    value={adForm.videoUrl}
+                                                    onChange={e => setAdForm({ ...adForm, videoUrl: e.target.value })}
+                                                    placeholder="https://example.com/ad.mp4"
+                                                    className="bg-gray-950 border-gray-800 text-white"
+                                                />
+                                                <p className="text-xs text-gray-500 mt-1">Leave empty to disable video ad</p>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-3">
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-300 mb-1">Show After (seconds)</label>
+                                                    <Input
+                                                        type="number"
+                                                        min="0"
+                                                        value={adForm.showAfterSeconds}
+                                                        onChange={e => setAdForm({ ...adForm, showAfterSeconds: e.target.value })}
+                                                        className="bg-gray-950 border-gray-800 text-white"
+                                                    />
+                                                    <p className="text-xs text-gray-500 mt-1">0 = immediately on play</p>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-300 mb-1">Skip After (seconds)</label>
+                                                    <Input
+                                                        type="number"
+                                                        min="0"
+                                                        value={adForm.skipAfterSeconds}
+                                                        onChange={e => setAdForm({ ...adForm, skipAfterSeconds: e.target.value })}
+                                                        className="bg-gray-950 border-gray-800 text-white"
+                                                    />
+                                                    <p className="text-xs text-gray-500 mt-1">0 = no skip button</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div className="flex items-center gap-2">
                                         <input
                                             type="checkbox"
@@ -582,7 +629,7 @@ export default function AdminDashboard() {
                                             type="button"
                                             variant="outline"
                                             className="border-gray-800 text-white hover:bg-gray-800"
-                                            onClick={() => setAdForm({ id: '', imageUrl: '', link: '', showCountPerDay: '1', isActive: true })}
+                                            onClick={() => setAdForm({ id: '', imageUrl: '', link: '', showCountPerDay: '1', isActive: true, videoUrl: '', showAfterSeconds: '0', skipAfterSeconds: '5' })}
                                         >
                                             Cancel
                                         </Button>
@@ -609,7 +656,7 @@ export default function AdminDashboard() {
                                                                 {ad.isActive ? 'Active' : 'Inactive'}
                                                             </Badge>
                                                             <div className="flex gap-1">
-                                                                <Button size="sm" variant="ghost" className="h-auto p-1 text-[var(--theme-primary)]" onClick={() => setAdForm({ ...ad, showCountPerDay: ad.showCountPerDay.toString() })}>
+                                                                <Button size="sm" variant="ghost" className="h-auto p-1 text-[var(--theme-primary)]" onClick={() => setAdForm({ ...ad, showCountPerDay: ad.showCountPerDay.toString(), videoUrl: ad.videoUrl || '', showAfterSeconds: (ad.showAfterSeconds ?? 0).toString(), skipAfterSeconds: (ad.skipAfterSeconds ?? 5).toString() })}>
                                                                     Edit
                                                                 </Button>
                                                                 <Button size="sm" variant="ghost" className="h-auto p-1 text-red-500" onClick={() => handleDeleteAd(ad.id)}>
@@ -621,6 +668,12 @@ export default function AdminDashboard() {
                                                         <p className="text-xs text-gray-500 mt-1">
                                                             Frequency: {ad.showCountPerDay === 0 ? 'Every time' : `${ad.showCountPerDay}x per day`}
                                                         </p>
+                                                        {ad.videoUrl && (
+                                                            <p className="text-xs text-yellow-500 mt-1 flex items-center gap-1">
+                                                                <PlayCircle className="h-3 w-3" />
+                                                                Video ad — shows at {ad.showAfterSeconds}s, skip after {ad.skipAfterSeconds}s
+                                                            </p>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
