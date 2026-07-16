@@ -92,11 +92,17 @@ export async function POST(request: Request) {
             // ============================
             // GUEST USER
             // ============================
-            const ipAddress = request.headers.get('x-forwarded-for') || request.headers.get('remote-addr') || 'unknown'
+            let guestId = cookieStore.get('guest_id')?.value
+            let isNewGuest = false
+            
+            if (!guestId) {
+                guestId = require('crypto').randomUUID()
+                isNewGuest = true
+            }
             
             let guestRecord = await prisma.guestActivity.findFirst({
                 where: {
-                    ipAddress: ipAddress,
+                    ipAddress: guestId, // Using ipAddress column to store the unique guest session ID
                     contentId: String(contentId),
                     contentType: String(contentType),
                     episodeId: episodeId ? String(episodeId) : null
@@ -115,7 +121,7 @@ export async function POST(request: Request) {
             } else {
                 guestRecord = await prisma.guestActivity.create({
                     data: {
-                        ipAddress: ipAddress,
+                        ipAddress: guestId,
                         contentId: String(contentId),
                         contentType: String(contentType),
                         contentTitle: contentTitle ? String(contentTitle) : null,
@@ -129,7 +135,12 @@ export async function POST(request: Request) {
                     }
                 })
             }
-            return NextResponse.json(guestRecord, { status: 200 })
+            
+            const response = NextResponse.json(guestRecord, { status: 200 })
+            if (isNewGuest) {
+                response.cookies.set('guest_id', guestId as string, { maxAge: 60 * 60 * 24 * 365, path: '/' })
+            }
+            return response
         }
     } catch (error) {
         console.error('Watch history POST error:', error)
