@@ -31,7 +31,7 @@ export async function GET(request: Request) {
       orderBy: {
         updatedAt: 'desc',
       },
-      take: 50,
+      take: 200, // fetch more so we can group accurately
       include: {
         user: {
           select: {
@@ -74,25 +74,37 @@ export async function GET(request: Request) {
       take: 50,
     })
 
-    const liveGuests = recentGuests.map((guest: any) => ({
-      id: guest.id,
+    const guestGroups: any = {}
+    recentGuests.forEach((guest: any) => {
+      const key = `${guest.contentId}-${guest.episodeId || 'movie'}`
+      if (!guestGroups[key]) {
+        guestGroups[key] = { count: 0, latestGuest: guest }
+      }
+      guestGroups[key].count++
+      if (new Date(guest.updatedAt) > new Date(guestGroups[key].latestGuest.updatedAt)) {
+        guestGroups[key].latestGuest = guest
+      }
+    })
+
+    const liveGuests = Object.values(guestGroups).map(({ count, latestGuest }: any) => ({
+      id: latestGuest.id,
       user: {
-        id: `guest-${guest.id}`,
-        username: 'Guest',
+        id: `guest-group-${latestGuest.id}`,
+        username: count > 1 ? `${count} Guests` : '1 Guest',
         avatar: null,
         isGuest: true,
-        ip: guest.ipAddress
+        ip: null
       },
       content: {
-        id: guest.contentId,
-        type: guest.contentType,
-        title: guest.contentTitle || 'Unknown Title',
-        poster: guest.contentPoster || '',
-        progress: guest.progress,
-        duration: guest.duration,
-        seasonNumber: guest.seasonNumber,
-        episodeNumber: guest.episodeNumber,
-        updatedAt: guest.updatedAt
+        id: latestGuest.contentId,
+        type: latestGuest.contentType,
+        title: latestGuest.contentTitle || 'Unknown Title',
+        poster: latestGuest.contentPoster || '',
+        progress: latestGuest.progress,
+        duration: latestGuest.duration,
+        seasonNumber: latestGuest.seasonNumber,
+        episodeNumber: latestGuest.episodeNumber,
+        updatedAt: latestGuest.updatedAt
       }
     }))
 
